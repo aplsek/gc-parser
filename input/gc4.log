@@ -1,0 +1,231 @@
+
+
+
+
+
+
+433.905: [GC pause (G1 Evacuation Pause) (young)
+   [Parallel Time: 89.5 ms, GC Workers: 8]
+      [GC Worker Start (ms): Min: 433904.9, Avg: 433905.0, Max:
+433905.0, Diff: 0.1]
+      [Ext Root Scanning (ms): Min: 0.8, Avg: 1.2, Max: 3.0, Diff:
+2.1, Sum: 9.3]
+      [Update RS (ms): Min: 1.6, Avg: 3.3, Max: 3.7, Diff: 2.1, Sum: 26.2]
+         [Processed Buffers: Min: 7, Avg: 11.6, Max: 17, Diff: 10, Sum: 93]
+      [Scan RS (ms): Min: 6.9, Avg: 7.2, Max: 7.4, Diff: 0.5, Sum: 57.8]
+      [Code Root Scanning (ms): Min: 1.0, Avg: 1.4, Max: 1.7, Diff:
+0.7, Sum: 11.0]
+      [Object Copy (ms): Min: 76.0, Avg: 76.2, Max: 76.3, Diff: 0.3, Sum: 609.7]
+      [Termination (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.0]
+      [GC Worker Other (ms): Min: 0.0, Avg: 0.1, Max: 0.1, Diff: 0.1, Sum: 0.6]
+      [GC Worker Total (ms): Min: 89.3, Avg: 89.3, Max: 89.4, Diff:
+0.1, Sum: 714.7]
+      [GC Worker End (ms): Min: 433994.3, Avg: 433994.3, Max:
+433994.4, Diff: 0.1]
+   [Code Root Fixup: 0.7 ms]
+   [Code Root Migration: 2.1 ms]
+   [Clear CT: 1.3 ms]
+   [Other: 10.5 ms]
+      [Choose CSet: 0.0 ms]
+      [Ref Proc: 4.9 ms]
+      [Ref Enq: 0.0 ms]
+      [Free CSet: 5.0 ms]
+   [Eden: 8944.0M(8944.0M)->0.0B(8920.0M) Survivors: 272.0M->296.0M
+Heap: 9418.3M(15.0G)->498.3M(15.0G)]
+ [Times: user=0.71 sys=0.03, real=0.11 secs]
+
+
+451.361: [GC pause (G1 Evacuation Pause) (young)
+   [Parallel Time: 89.7 ms, GC Workers: 8]
+      [GC Worker Start (ms): Min: 451361.5, Avg: 451361.6, Max:
+451361.6, Diff: 0.1]
+      [Ext Root Scanning (ms): Min: 1.0, Avg: 1.3, Max: 3.2, Diff:
+2.2, Sum: 10.3]
+      [Update RS (ms): Min: 1.2, Avg: 3.0, Max: 3.4, Diff: 2.2, Sum: 23.6]
+         [Processed Buffers: Min: 5, Avg: 11.5, Max: 16, Diff: 11, Sum: 92]
+      [Scan RS (ms): Min: 6.8, Avg: 7.3, Max: 7.8, Diff: 1.0, Sum: 58.2]
+      [Code Root Scanning (ms): Min: 0.8, Avg: 1.3, Max: 1.6, Diff:
+0.8, Sum: 10.1]
+      [Object Copy (ms): Min: 76.3, Avg: 76.7, Max: 76.8, Diff: 0.5, Sum: 613.6]
+      [Termination (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.0]
+      [GC Worker Other (ms): Min: 0.0, Avg: 0.1, Max: 0.1, Diff: 0.1, Sum: 0.7]
+      [GC Worker Total (ms): Min: 89.5, Avg: 89.6, Max: 89.6, Diff:
+0.1, Sum: 716.5]
+      [GC Worker End (ms): Min: 451451.1, Avg: 451451.1, Max:
+451451.2, Diff: 0.1]
+   [Code Root Fixup: 0.4 ms]
+   [Code Root Migration: 2.4 ms]
+   [Clear CT: 1.3 ms]
+   [Other: 12.0 ms]
+      [Choose CSet: 0.0 ms]
+      [Ref Proc: 6.4 ms]
+      [Ref Enq: 0.0 ms]
+      [Free CSet: 5.0 ms]
+   [Eden: 8920.0M(8920.0M)->0.0B(8908.0M) Survivors: 296.0M->308.0M
+Heap: 9418.3M(15.0G)->510.3M(15.0G)]
+ [Times: user=0.72 sys=0.02, real=0.10 secs]
+
+
+
+
+755.441: [GC pause (young), 0.4418240 secs]
+   [Parallel Time: 413.6 ms, GC Workers: 12]
+      [GC Worker Start (ms): Min: 755440.9, Avg: 755441.0, Max:
+755441.1, Diff: 0.1]
+      [Ext Root Scanning (ms): Min: 12.8, Avg: 16.0, Max: 18.0, Diff:
+5.2, Sum: 192.4]
+      [Update RS (ms): Min: 6.2, Avg: 8.2, Max: 11.3, Diff: 5.1, Sum: 98.3]
+         [Processed Buffers: Min: 15, Avg: 26.5, Max: 36, Diff: 21, Sum: 318]
+      [Scan RS (ms): Min: 0.1, Avg: 0.3, Max: 0.3, Diff: 0.2, Sum: 3.1]
+      [Object Copy (ms): Min: 388.1, Avg: 388.8, Max: 389.6, Diff:
+1.5, Sum: 4665.1]
+      [Termination (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.0]
+      [GC Worker Other (ms): Min: 0.0, Avg: 0.1, Max: 0.1, Diff: 0.1, Sum: 1.0]
+      [GC Worker Total (ms): Min: 413.2, Avg: 413.3, Max: 413.4, Diff:
+0.2, Sum: 4959.8]
+      [GC Worker End (ms): Min: 755854.3, Avg: 755854.3, Max:
+755854.4, Diff: 0.1]
+   [Code Root Fixup: 0.0 ms]
+   [Clear CT: 2.8 ms]
+   [Other: 25.4 ms]
+      [Choose CSet: 0.0 ms]
+      [Ref Proc: 21.4 ms]
+      [Ref Enq: 2.4 ms]
+      [Free CSet: 0.5 ms]
+   [Eden: 9024.0M(9024.0M)->0.0B(8384.0M) Survivors: 800.0M->1248.0M
+Heap: 13.2G(16.0G)->5072.0M(16.0G)]
+ [Times: user=5.41 sys=0.01, real=0.44 secs]
+893.174: [GC pause (young), 0.1550310 secs]
+   [Parallel Time: 139.0 ms, GC Workers: 12]
+      [GC Worker Start (ms): Min: 893173.9, Avg: 893174.0, Max:
+893174.1, Diff: 0.1]
+      [Ext Root Scanning (ms): Min: 13.0, Avg: 15.9, Max: 18.3, Diff:
+5.3, Sum: 190.2]
+      [Update RS (ms): Min: 4.4, Avg: 7.0, Max: 9.8, Diff: 5.4, Sum: 83.8]
+         [Processed Buffers: Min: 10, Avg: 16.8, Max: 33, Diff: 23, Sum: 202]
+      [Scan RS (ms): Min: 0.0, Avg: 0.2, Max: 0.3, Diff: 0.3, Sum: 2.5]
+      [Object Copy (ms): Min: 115.1, Avg: 115.5, Max: 116.1, Diff:
+0.9, Sum: 1385.5]
+      [Termination (ms): Min: 0.0, Avg: 0.2, Max: 0.3, Diff: 0.3, Sum: 2.9]
+      [GC Worker Other (ms): Min: 0.0, Avg: 0.1, Max: 0.1, Diff: 0.1, Sum: 1.0]
+      [GC Worker Total (ms): Min: 138.7, Avg: 138.8, Max: 139.0, Diff:
+0.2, Sum: 1665.8]
+      [GC Worker End (ms): Min: 893312.8, Avg: 893312.8, Max:
+893312.9, Diff: 0.1]
+   [Code Root Fixup: 0.0 ms]
+   [Clear CT: 2.5 ms]
+   [Other: 13.5 ms]
+      [Choose CSet: 0.0 ms]
+      [Ref Proc: 10.9 ms]
+      [Ref Enq: 1.3 ms]
+      [Free CSet: 0.8 ms]
+   [Eden: 8448.0M(8448.0M)->0.0B(8448.0M) Survivors: 416.0M->416.0M
+Heap: 13.9G(16.0G)->5813.9M(16.0G)]
+ [Times: user=1.70 sys=0.00, real=0.15 secs]
+1164.896: [GC pause (mixed), 0.2408880 secs]
+   [Parallel Time: 233.2 ms, GC Workers: 12]
+      [GC Worker Start (ms): Min: 1164896.8, Avg: 1164896.9, Max:
+1164896.9, Diff: 0.2]
+      [Ext Root Scanning (ms): Min: 12.7, Avg: 15.6, Max: 18.0, Diff:
+5.3, Sum: 186.6]
+      [Update RS (ms): Min: 180.8, Avg: 183.3, Max: 186.3, Diff: 5.5,
+Sum: 2200.0]
+         [Processed Buffers: Min: 263, Avg: 290.7, Max: 333, Diff: 70,
+Sum: 3488]
+      [Scan RS (ms): Min: 9.3, Avg: 10.5, Max: 12.8, Diff: 3.5, Sum: 126.2]
+      [Object Copy (ms): Min: 21.2, Avg: 23.6, Max: 25.4, Diff: 4.2, Sum: 283.1]
+      [Termination (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.1]
+      [GC Worker Other (ms): Min: 0.0, Avg: 0.1, Max: 0.1, Diff: 0.1, Sum: 0.7]
+      [GC Worker Total (ms): Min: 233.0, Avg: 233.1, Max: 233.1, Diff:
+0.1, Sum: 2796.7]
+      [GC Worker End (ms): Min: 1165129.9, Avg: 1165129.9, Max:
+1165129.9, Diff: 0.1]    [Code Root Fixup: 0.0 ms]
+   [Clear CT: 3.4 ms]
+   [Other: 4.3 ms]
+      [Choose CSet: 0.2 ms]
+      [Ref Proc: 1.9 ms]
+      [Ref Enq: 0.3 ms]
+      [Free CSet: 1.1 ms]
+   [Eden: 672.0M(672.0M)->0.0B(672.0M) Survivors: 128.0M->128.0M Heap:
+8811.0M(16.0G)->6749.9M(16.0G)]
+ [Times: user=2.82 sys=0.00, real=0.24 secs]
+
+
+
+1161.747: [GC concurrent-root-region-scan-start]
+1162.042: [GC concurrent-root-region-scan-end, 0.2950840 secs]
+1162.042: [GC concurrent-mark-start]
+1162.842: [GC concurrent-mark-end, 0.8000300 secs]
+1162.844: [GC remark 1162.846: [GC ref-proc, 0.0147680 secs], 0.0899440 secs]
+ [Times: user=0.14 sys=0.00, real=0.09 secs]
+1162.934: [GC cleanup 11G->11G(16G), 0.0170410 secs]
+ [Times: user=0.18 sys=0.00, real=0.01 secs]
+1162.952: [GC concurrent-cleanup-start]
+1162.952: [GC concurrent-cleanup-end, 0.0001380 secs]
+1164.022: [GC pause (young), 0.3428290 secs]
+   [Parallel Time: 326.4 ms, GC Workers: 12]
+      [GC Worker Start (ms): Min: 1164022.4, Avg: 1164022.4, Max:
+1164022.5, Diff: 0.1]
+      [Ext Root Scanning (ms): Min: 12.7, Avg: 15.7, Max: 18.3, Diff:
+5.5, Sum: 188.0]
+      [Update RS (ms): Min: 105.9, Avg: 108.0, Max: 111.0, Diff: 5.1,
+Sum: 1296.5]
+         [Processed Buffers: Min: 154, Avg: 202.2, Max: 246, Diff: 92,
+Sum: 2427]
+      [Scan RS (ms): Min: 0.0, Avg: 0.3, Max: 0.4, Diff: 0.4, Sum: 3.3]
+      [Object Copy (ms): Min: 201.6, Avg: 202.2, Max: 203.1, Diff:
+1.5, Sum: 2425.8]
+      [Termination (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.2]
+      [GC Worker Other (ms): Min: 0.0, Avg: 0.1, Max: 0.1, Diff: 0.1, Sum: 0.9]
+      [GC Worker Total (ms): Min: 326.1, Avg: 326.2, Max: 326.3, Diff:
+0.2, Sum: 3914.7]
+      [GC Worker End (ms): Min: 1164348.6, Avg: 1164348.7, Max:
+1164348.7, Diff: 0.1]
+   [Code Root Fixup: 0.0 ms]
+   [Clear CT: 2.0 ms]
+   [Other: 14.4 ms]
+      [Choose CSet: 0.0 ms]
+      [Ref Proc: 11.9 ms]
+      [Ref Enq: 1.5 ms]
+      [Free CSet: 0.3 ms]
+   [Eden: 4736.0M(4704.0M)->0.0B(96.0M) Survivors: 704.0M->704.0M
+Heap: 13.6G(16.0G)->9264.0M(16.0G)]
+ [Times: user=3.94 sys=0.00, real=0.35 secs]
+
+
+1165.366: [GC pause (mixed), 0.0793930 secs]
+   [Parallel Time: 71.1 ms, GC Workers: 12]
+      [GC Worker Start (ms): Min: 1165366.3, Avg: 1165366.4, Max:
+1165366.5, Diff: 0.2]
+      [Ext Root Scanning (ms): Min: 12.8, Avg: 15.6, Max: 18.0, Diff:
+5.3, Sum: 187.8]
+      [Update RS (ms): Min: 12.3, Avg: 14.5, Max: 17.4, Diff: 5.1, Sum: 173.4]
+         [Processed Buffers: Min: 11, Avg: 28.8, Max: 41, Diff: 30, Sum: 345]
+      [Scan RS (ms): Min: 8.5, Avg: 8.6, Max: 8.8, Diff: 0.3, Sum: 103.7]
+      [Object Copy (ms): Min: 31.3, Avg: 32.1, Max: 33.0, Diff: 1.8, Sum: 385.4]
+      [Termination (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.1]
+      [GC Worker Other (ms): Min: 0.0, Avg: 0.1, Max: 0.1, Diff: 0.1, Sum: 0.7]
+      [GC Worker Total (ms): Min: 70.9, Avg: 70.9, Max: 71.0, Diff:
+0.2, Sum: 851.1]
+      [GC Worker End (ms): Min: 1165437.3, Avg: 1165437.4, Max:
+1165437.4, Diff: 0.1]    [Code Root Fixup: 0.0 ms]
+   [Clear CT: 4.3 ms]
+   [Other: 3.9 ms]
+      [Choose CSet: 0.2 ms]
+      [Ref Proc: 1.6 ms]
+      [Ref Enq: 0.2 ms]
+      [Free CSet: 1.2 ms]
+   [Eden: 672.0M(672.0M)->0.0B(672.0M) Survivors: 128.0M->128.0M Heap:
+7421.9M(16.0G)->5212.4M(16.0G)]
+ [Times: user=0.90 sys=0.00, real=0.08 secs]
+
+
+
+
+
+433.905: [GC pause (G1 Evacuation Pause) (young) [Eden: 8944.0M(8944.0M)->0.0B(8920.0M) Survivors: 272.0M->296.0M Heap: 9418.3M(15.0G)->498.3M(15.0G)] [Times: user=0.71 sys=0.03, real=0.11 secs]
+451.361: [GC pause (G1 Evacuation Pause) (young) [Eden: 8920.0M(8920.0M)->0.0B(8908.0M) Survivors: 296.0M->308.0M Heap: 9418.3M(15.0G)->510.3M(15.0G)] [Times: user=0.72 sys=0.02, real=0.10 secs]
+755.441: [GC pause (young), 0.4418240 secs] [Eden: 9024.0M(9024.0M)->0.0B(8384.0M) Survivors: 800.0M->1248.0M Heap: 13.2G(16.0G)->5072.0M(16.0G)] [Times: user=5.41 sys=0.01, real=0.44
+secs]
+1165.366: [GC pause (mixed), 0.0793930 secs] [Eden: 672.0M(672.0M)->0.0B(672.0M) Survivors: 128.0M->128.0M Heap: 7421.9M(16.0G)->5212.4M(16.0G)]  [Times: user=0.90 sys=0.00, real=0.08
+secs]

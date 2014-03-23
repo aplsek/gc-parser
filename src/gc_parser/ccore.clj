@@ -1,6 +1,3 @@
-
-(ns gc-parser.gccore)
-
 (use '[clojure.string :only (join)])
 
 ; Match for pause time "0.1566980 secs]"
@@ -40,6 +37,7 @@
 (def ^:constant exec-stat " \\[Times: user=([\\d\\.]+) sys=([\\d\\.]+), real=([\\d\\.]+) secs\\]")
 
 
+
 ; G1 pauses
 
 ; G1 evacuation:
@@ -49,7 +47,7 @@
 ; secs]
 ;
 (defn minor-gc-pattern-g1-evac []
-   (let [timestamp  "([\\d\\.]+): \\[GC pause (G1 Evacuation Pause) (young) "
+   (let [timestamp  "([\\d\\.]+): \\[GC pause \\(G1 Evacuation Pause\\) \\(young\\) "
         eden        (str "[" space-eden " ")
         survivor    (str space-surv " ")
         heap        (str space-heap "] ")]
@@ -62,12 +60,11 @@
 ;   secs]
 ;
 (defn minor-gc-pattern-g1-young []
-   (let [timestamp  "([\\d\\.]+): \\[GC pause (young), "
+   (let [timestamp  "([\\d\\.]+): \\[GC pause \\(young\\), "
         eden        (str "[" space-eden " ")
         survivor    (str space-surv " ")
         heap        (str space-heap "] ")]
     (re-pattern (str timestamp pause-time eden survivor heap exec-stat))))
-
 
 ; G1 mixed
 ; 1165.366: [GC pause (mixed), 0.0793930 secs] [Eden: 672.0M(672.0M)->0.0B(672.0M) Survivors: 128.0M->128.0M Heap:
@@ -75,7 +72,7 @@
 ;
 ;
 (defn gc-pattern-g1-mixed []
-   (let [timestamp  "([\\d\\.]+): \\[GC pause (mixed), "
+   (let [timestamp  "([\\d\\.]+): \\[GC pause \\(mixed\\), "
         eden        (str "[" space-eden " ")
         survivor    (str space-surv " ")
         heap        (str space-heap "] ")]
@@ -85,9 +82,8 @@
 ; 1161.747: [GC concurrent-root-region-scan-start]
 ;
 (defn gc-pattern-g1-concurrent-root-region-scan-start []
-   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-root-region-scan-start] "]
+   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-root-region-scan-start\\] "]
     (re-pattern (str timestamp))))
-
 
 ; 1162.042: [GC concurrent-root-region-scan-end, 0.2950840 secs]
 ;
@@ -99,7 +95,7 @@
 ; 1162.042: [GC concurrent-mark-start]
 ;
 (defn gc-pattern-g1-concurrent-mark-start []
-   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-mark-start] "]
+   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-mark-start\\] "]
     (re-pattern (str timestamp))))
 
 
@@ -110,10 +106,11 @@
     (re-pattern (str timestamp pause-time))))
 
 
+
 ; 1162.952: [GC concurrent-cleanup-start]
 ;
 (defn gc-pattern-g1-concurrent-cleanup-start []
-   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-cleanup-start] "]
+   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-cleanup-start\\] "]
     (re-pattern (str timestamp))))
 ; 1162.952: [GC concurrent-cleanup-end, 0.0001380 secs]
 ;
@@ -121,13 +118,17 @@
    (let [timestamp  "([\\d\\.]+): \\[GC concurrent-cleanup-end, "]
     (re-pattern (str timestamp pause-time))))
 
-
 ; 1162.844: [GC remark 1162.846: [GC ref-proc, 0.0147680 secs], 0.0899440 secs]
 ;
 ;
 (defn gc-pattern-g1-remark []
    (let [timestamp  "([\\d\\.]+): \\[GC remark, "]
     (re-pattern (str timestamp pause-time))))
+
+
+; [Times: user=0.14 sys=0.00, real=0.09 secs]
+;1162.934: [GC cleanup 11G->11G(16G), 0.0170410 secs]
+; [Times: user=0.18 sys=0.00, real=0.01 secs]
 
 
 ; Example Minor GC entry
@@ -139,7 +140,6 @@
         young-gen   (str space "] ")
         heap        (str space ", ")]
     (re-pattern (str timestamp young-gen  heap pause-time exec-stat))))
-
 
 ; Example Full GC entry
 ;"43587.513: [Full GC (System) [PSYoungGen: 964K->0K(598912K)]
@@ -160,7 +160,6 @@
                           perm-gen
                           pause-time
                           exec-stat))))
-
 
 ; Variable definitions (for both process-full-gc & process-minor-gc
 ;     ts - timestamp (in seconds)
@@ -189,7 +188,6 @@
               os oe om
               ps pe pm])))
 
-
 (defn process-minor-gc [entry]
   (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
     (join \, [ts "minor" pt
@@ -204,13 +202,10 @@
               hs he hm
               ut kt rt])))
 
-(defn process-g1-mixed [entry]
-  (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
-    (join \, [ts "g1mixed" pt
-              ys ye ym
-              hs he hm
-              ut kt rt])))
-
+(defn process-g1-mixed) [entry]
+    (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
+      println (str "g1-mixed match: " a ts)
+      )
 
 
 
@@ -220,7 +215,6 @@
                         "time.user" "time.sys" "time.real"
                         "old.start" "old.end" "old.max"
                         "perm.start" "perm.end" "perm.max"]))
-
 
 
 (defn process-gc-file [infile outfile]
@@ -265,18 +259,15 @@
 
 
 
-    
-
 (defn -main
   "I don't do a whole lot."
   [& args]
-  (println "Hello, World!  adsf "))
-
-
+  (println "Hello, World!"))
 
 ;-----------------------------------------------------------------------
 ; Convert Java GC log csv format
 ;-----------------------------------------------------------------------
 (process-gc-file "gc.log" "data.csv")
-;(process-gc-file "gc.log" "data.csv")
+(process-gc-file "gc.log" "data.csv")
+
 

@@ -1,0 +1,14 @@
+433.905: 
+  yob  youngGen occupation :8944.0M
+  ysb YoungGen size before: (8944.0M)
+  yoa  Young gen occupation after :->0.0B
+  ysa Yougn Gen size after: (8920.0M) 
+  sb Survivors occupation before: 272.0M->
+  sa Survivor occupation after:  296.0M
+  hob  Heap occ before: 9418.3M
+  hsb heap size before (15.0G)
+  hoa heap occ after -> 498.3M(
+  hsa heap size after 15.0G)] 
+  ut  user time [Times: user=0.71
+  kt sys time  sys=0.03,
+  rt real time : real=0.11 secs]

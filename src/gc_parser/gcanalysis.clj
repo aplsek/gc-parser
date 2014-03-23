@@ -1,3 +1,5 @@
+(ns gc-parser.gcanalysis)
+
 (use '[clojure.string :only (join)])  
 ;
 ; Use when-let to test
@@ -61,7 +63,8 @@
 	  
 (defn process-minor-gc [entry]
     (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
-	  (join \, [ts "minor" pt 
+	  (println (str "process minor: " entry "  END."))
+      (join \, [ts "minor" pt 
 		        ys ye ym 
 				hs he hm 
 				ut kt rt])))
@@ -87,8 +90,25 @@
 			  (when-not (nil? minor-gc) 
 				(writeln (process-minor-gc (first minor-gc))))))))))
 
+
+(defn testt
+  [line]
+    (println "test :")
+   (let [g1-evac  (re-seq (minor-gc-pattern) line)]
+     (println "test :")
+      (println (str "str :" g1-evac))
+      (when-not (nil? g1-evac)
+              ( (println " match g1-minor!!!!!")
+                (println (process-minor-gc (first g1-evac))))
+     )
+      (println (str "end. :"))
+  )
+   )
+
+(testt "212.785: [GC [PSYoungGen: 524288K->32124K(611648K)] 524288K->32124K(2009792K), 0.1566980 secs] [Times: user=0.24 sys=0.06, real=0.16 secs]")
+
 ;-----------------------------------------------------------------------	  
 ; Convert Java GC log csv format
 ;-----------------------------------------------------------------------				
-(process-gc-file "gc.log" "data.csv")
+;(process-gc-file "gc.log" "data.csv")
 
