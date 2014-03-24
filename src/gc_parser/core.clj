@@ -99,7 +99,7 @@
 ; 1162.042: [GC concurrent-mark-start]
 ;
 (defn gc-pattern-g1-concurrent-mark-start []
-   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-mark-start] "]
+   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-mark-start\\] "]
     (re-pattern (str timestamp))))
 
 
@@ -113,7 +113,7 @@
 ; 1162.952: [GC concurrent-cleanup-start]
 ;
 (defn gc-pattern-g1-concurrent-cleanup-start []
-   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-cleanup-start] "]
+   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-cleanup-start\\] "]
     (re-pattern (str timestamp))))
 ; 1162.952: [GC concurrent-cleanup-end, 0.0001380 secs]
 ;

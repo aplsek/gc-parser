@@ -32,7 +32,9 @@
 ;(def ^:constant space-g1 (str "number\\(number\\)" "->" number"\\(" number "\\)"))
 (def ^:constant space-g1 (str number "\\(" number "\\)" "->" number "\\(" number "\\)"))
 
-  
+(def ^:constant space-g1-cleanup (str number "->" number "\\(" number "\\)"))
+
+
 ; Match "Survivors: 272.0M->296.0M"
 (def ^:constant space-surv (str "Survivors: " space-g1-simple))
 
@@ -72,6 +74,89 @@
      (println (str timestamp pause-time eden survivor heap exec-stat))
     (re-pattern (str timestamp pause-time eden survivor heap exec-stat))))
 ;timestamp pause-time eden survivor heap exec-stat
+
+(defn gc-pattern-g1-cleanup []
+   (let [timestamp      "([\\d\\.]+): \\[GC cleanup "
+        space-cleanup   (str space-g1-cleanup ", ")]
+     (println (str timestamp pause-time exec-stat))
+    (re-pattern (str timestamp space-cleanup pause-time exec-stat))))
+
+
+
+; G1 mixed
+; 1165.366: [GC pause (mixed), 0.0793930 secs] [Eden: 672.0M(672.0M)->0.0B(672.0M) Survivors: 128.0M->128.0M Heap:
+; 7421.9M(16.0G)->5212.4M(16.0G)] [Times: user=0.90 sys=0.00, real=0.08 secs]
+;
+;
+(defn gc-pattern-g1-mixed []
+   (let [timestamp  "([\\d\\.]+): \\[GC pause \\(mixed\\), "
+        eden        (str " \\[" space-eden)
+        survivor    (str " " space-surv " ")
+        heap        (str space-heap "\\]")]
+     (println (str timestamp pause-time eden survivor heap exec-stat))
+    (re-pattern (str timestamp pause-time eden survivor heap exec-stat))))
+
+; 1161.747: [GC concurrent-root-region-scan-start]
+(defn gc-pattern-g1-conc-reg-start []
+   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-root-region-scan-start\\]"]
+    (re-pattern (str timestamp))))
+
+
+; 1162.042: [GC concurrent-root-region-scan-end, 0.2950840 secs]
+;
+(defn gc-pattern-g1-conc-reg-end []
+   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-root-region-scan-end, "]
+    (re-pattern (str timestamp pause-time))))
+
+
+; 1162.042: [GC concurrent-mark-start]
+;
+(defn gc-pattern-g1-conc-mark-start []
+   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-mark-start\\] "]
+    (re-pattern (str timestamp))))
+
+
+; 1162.842: [GC concurrent-mark-end, 0.8000300 secs]
+;
+(defn gc-pattern-g1-conc-mark-end []
+   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-mark-end, "]
+    (re-pattern (str timestamp pause-time))))
+
+
+; 1162.952: [GC concurrent-cleanup-start]
+;
+(defn gc-pattern-g1-conc-cl-start []
+   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-cleanup-start\\] "]
+    (re-pattern (str timestamp))))
+; 1162.952: [GC concurrent-cleanup-end, 0.0001380 secs]
+;
+(defn gc-pattern-g1-conc-cl-end []
+   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-cleanup-end, "]
+    (re-pattern (str timestamp pause-time))))
+
+
+; 1162.844: [GC remark 1162.846: [GC ref-proc, 0.0147680 secs], 0.0899440 secs]
+;
+;
+(defn gc-pattern-g1-remark []
+   (let [timestamp  "([\\d\\.]+): \\[GC remark, "]
+    (re-pattern (str timestamp pause-time))))
+
+
+; 1162.042: [GC concurrent-mark-start]
+;
+(defn gc-pattern-g1-conc-mark-start []
+   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-mark-start\\] "]
+    (re-pattern (str timestamp))))
+
+
+; 1162.842: [GC concurrent-mark-end, 0.8000300 secs]
+;
+(defn gc-pattern-g1-conc-mark-end []
+   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-mark-end, "]
+    (re-pattern (str timestamp pause-time))))
+
+
 
 ; Example Minor GC entry		 
 ; 212.785: [GC [PSYoungGen: 524288K->32124K(611648K)] 524288K->32124K(2009792K), 0.1566980 secs] [Times: user=0.24 sys=0.06, real=0.16 secs] 
@@ -129,8 +214,54 @@
     (println (str "   " ))
     (join \, [ts "g1young" rt yob ysb yoa sb sa hob hoa hsa ut kt rt])))
 
-;;;
-;
+(defn process-g1-mixed [entry]
+  (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
+    (join \, [ts "g1mixed" pt
+              ys ye ym
+              hs he hm
+              ut kt rt])))
+
+(defn process-g1-conc-reg-start[entry]
+    (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
+    (join \, [ts "g1conc-start"])))
+
+(defn process-g1-conc-reg-end[entry]
+    (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
+    (join \, [ts "g1conc-end" pt ])))
+
+
+(defn process-g1-conc-cl-start[entry]
+    (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
+    (join \, [ts "g1conc-cl-start"])))
+
+(defn process-g1-conc-cl-end[entry]
+    (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
+    (join \, [ts "g1conc-cl-end"])))
+
+
+
+(defn process-g1-conc-mark-start[entry]
+    (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
+    (join \, [ts "g1conc-mark-start"])))
+
+(defn process-g1-conc-mark-end[entry]
+    (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
+    (join \, [ts "g1conc-mark-end"])))
+
+
+(defn process-g1-remark[entry]
+    (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
+    (join \, [ts "g1remark"])))
+
+
+(defn process-g1-cleanup [entry]
+  (let [[a ts yob ysb yoa ysa sb sa hob hoa hsa ut kt rt & e] entry]
+    ;(println (str "Hello process-g1-evac:" entry))
+    ;(println (str "   " ))
+    (join \, [ts "g1cleanup" rt yob ysb yoa sb sa hob hoa hsa ut kt rt])))
+
+
+
 ;
 ;
 ;
@@ -158,6 +289,15 @@
     (println "test :")
    (let [g1-evac  (re-seq (minor-gc-pattern-g1-evac) line)
          g1-young (re-seq (minor-gc-pattern-g1-young) line)
+         g1-mixed (re-seq (gc-pattern-g1-mixed) line)
+         g1-conc-reg-st  (re-seq (gc-pattern-g1-conc-reg-start) line)
+         g1-conc-reg-en  (re-seq (gc-pattern-g1-conc-reg-end) line)
+         g1-conc-cl-start (re-seq (gc-pattern-g1-conc-cl-start) line)
+         g1-conc-cl-end (re-seq (gc-pattern-g1-conc-cl-end) line)
+         g1-conc-mark-start (re-seq (gc-pattern-g1-conc-mark-start) line)
+         g1-conc-mark-end (re-seq (gc-pattern-g1-conc-mark-end) line)
+         g1-remark (re-seq (gc-pattern-g1-remark) line)
+         g1-clanup (re-seq (gc-pattern-g1-cleanup) line)
          ]
      (println "test :" g1-young)
       (when-not (nil? g1-evac)
@@ -165,31 +305,51 @@
                 (println (process-g1-evac (first g1-evac))))
      )
        (when-not (nil? g1-young)
-             ( (println " match g1-young!!!!!")
-               (println (process-g1-evac (first g1-young))))
+             ( (println ( str " match g1-young = " g1-young ))
+               (println (process-g1-young (first g1-young))))
+     )
+     (when-not (nil? g1-mixed)
+           ( (println " match g1-mixed!!!!!")
+             (println (process-g1-mixed (first g1-mixed))))
+     )
+      (when-not (nil? g1-mixed)
+           ( (println " match g1-mixed!!!!!")
+             (println (process-g1-mixed (first g1-mixed))))
+     )
+      (when-not (nil? g1-conc-reg-st)
+           ( (println " match g1-mixed!!!!!")
+             (println (process-g1-conc-reg-start (first g1-conc-reg-st))))
+     )
+     (when-not (nil? g1-conc-reg-en)
+     ( (println " match g1-mixed!!!!!")
+       (println (process-g1-conc-reg-end (first g1-conc-reg-en))))
+     )
+     (when-not (nil? gc-pattern-g1-conc-cl-start)
+     ( (println " match g1-mixed!!!!!")
+       (println (process-g1-conc-cl-start (first g1-conc-cl-start))))
+     )
+     (when-not (nil? gc-pattern-g1-conc-cl-end)
+     ( (println " match g1-mixed!!!!!")
+       (println (process-g1-conc-cl-end (first g1-conc-cl-end))))
+     )
+      (when-not (nil? gc-pattern-g1-conc-mark-start)
+     ( (println " match g1-mixed!!!!!")
+       (println (process-g1-conc-mark-start (first g1-conc-mark-start))))
+     )
+     (when-not (nil? gc-pattern-g1-conc-mark-start)
+     ( (println " match g1-mixed!!!!!")
+       (println (process-g1-conc-mark-end (first g1-conc-mark-end))))
+     )
+     (when-not (nil? g1-remark)
+     ( (println " match g1-mixed!!!!!")
+     (println (process-g1-remark (first g1-remark))))
      )
       (println (str "end. :"))
   )
 )
 
-(defn testt2
-  [line]
-    (println "test :")
-   (let [g1-evac  (re-seq (minor-gc-pattern-g1-evac) line)
-         g1-young (re-seq (minor-gc-pattern-g1-young) line)
-         ]
-     (println "test :" g1-evac)
-      (when-not (nil? g1-evac)
-                (println (process-g1-evac (first g1-evac))))
-     
-       (when-not (nil? g1-young)
-               (println (process-g1-young (first g1-young))))
-     
-      (println (str "end. :"))
-  )
-)
+gc-pattern-g1-remark
 
-;([\d\.]+): \[GC pause \(G1 Evacuation Pause\) \(young\) \[Eden: ([\d\.]+)[KMG]B?\(([\d\.]+)[KMG]B?\)->([\d\.]+)[KMG]B?\(([\d\.]+)[KMG]B?\) Survivors: ([\d\.]+)[KMG]B?->([\d\.]+)[KMG]B? Heap: ([\d\.]+)[KMG]B?\(([\d\.]+)[KMG]B?\)->([\d\.]+)[KMG]B?\(([\d\.]+)[KMG]B?\)]
 
 (defn test-let
   [x]
@@ -221,9 +381,19 @@
 ;(def ^:constant g1-young-s "755.441: [GC pause (young), 0.4418240 secs] [Eden: 9024.0M(9024.0M)->0.0B(8384.0M) Survivors: 800.0M->1248.0M Heap: 13.2G(16.0G)->5072.0M(16.0G)] [Times: user=5.41 sys=0.01, real=0.44 secs]")
 
 
-(testt g1-evac)
+;(testt g1-evac)
 
-(testt g1-young)
+;(testt G1_YOUNG_TEST)
+
+;(testt G1_CONCURRENT_REG_START_TEST )
+
+;(testt G1_CONCURRENT_REG_END_TEST )
+
+
+G1_CONC_MARK_END_TEST
+G1_CONC_MARK_ST_TEST
+
+(testt G1_REMART_TEST)
 
 ;(test-let "433.905: [GC pause (G1 Evacuation Pause) (young)")
 
