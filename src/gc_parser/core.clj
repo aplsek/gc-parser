@@ -14,18 +14,12 @@
     (with-open [w (clojure.java.io/writer outfile)]
       (let [writeln (fn [x] (.write w (str x "\n")))]
         (doseq [line gcdata]
-          (let [
-                g1-evac  (re-seq (minor-gc-pattern-g1-evac) line)]
-            (when-not (nil? g1-evac)
-              ( (println " match g1-evac")
-                writeln (process-g1-evac (first g1-evac))))
-            ))))))
+          (resolve_line line writeln))))))
 
 
 
-(defn testt
-  [line]
-    (println "test :")
+(defn resolve_line
+  [line writeln]
    (let [g1-evac  (re-seq (minor-gc-pattern-g1-evac) line)
          g1-young (re-seq (minor-gc-pattern-g1-young) line)
          g1-mixed (re-seq (gc-pattern-g1-mixed) line)
@@ -38,56 +32,57 @@
          g1-remark (re-seq (gc-pattern-g1-remark) line)
          g1-clanup (re-seq (gc-pattern-g1-cleanup) line)
          ]
-     (println "test :" g1-young)
-      (when-not (nil? g1-evac)
-              ( (println " match g1-evac!!!!!")
-                (println (process-g1-evac (first g1-evac))))
+     (when-not (nil? g1-evac)
+             ( (println (str "match g1-evac!!!!! :" g1-evac))
+               (writeln (str "writeln test"))
+               (writeln (process-g1-evac (first g1-evac)))
+               (println (str "match g1-evtest write null"))
+               )
      )
-       (when-not (nil? g1-young)
-             ( (println ( str " match g1-young = " g1-young ))
-               (println (process-g1-young (first g1-young))))
+     (when-not (nil? g1-young)
+           ( (println ( str " match g1-young = " g1-young ))
+             (writeln (process-g1-young (first g1-young))))
      )
      (when-not (nil? g1-mixed)
            ( (println " match g1-mixed!!!!!")
-             (println (process-g1-mixed (first g1-mixed))))
+             (writeln (process-g1-mixed (first g1-mixed))))
      )
       (when-not (nil? g1-mixed)
            ( (println " match g1-mixed!!!!!")
-             (println (process-g1-mixed (first g1-mixed))))
+             (writeln (process-g1-mixed (first g1-mixed))))
      )
       (when-not (nil? g1-conc-reg-st)
            ( (println " match g1-mixed!!!!!")
-             (println (process-g1-conc-reg-start (first g1-conc-reg-st))))
+             (writeln (process-g1-conc-reg-start (first g1-conc-reg-st))))
      )
      (when-not (nil? g1-conc-reg-en)
      ( (println " match g1-mixed!!!!!")
-       (println (process-g1-conc-reg-end (first g1-conc-reg-en))))
+       (writeln (process-g1-conc-reg-end (first g1-conc-reg-en))))
      )
      (when-not (nil? gc-pattern-g1-conc-cl-start)
      ( (println " match g1-mixed!!!!!")
-       (println (process-g1-conc-cl-start (first g1-conc-cl-start))))
+       (writeln (process-g1-conc-cl-start (first g1-conc-cl-start))))
      )
      (when-not (nil? gc-pattern-g1-conc-cl-end)
      ( (println " match g1-mixed!!!!!")
-       (println (process-g1-conc-cl-end (first g1-conc-cl-end))))
+       (writeln (process-g1-conc-cl-end (first g1-conc-cl-end))))
      )
       (when-not (nil? gc-pattern-g1-conc-mark-start)
      ( (println " match g1-mixed!!!!!")
-       (println (process-g1-conc-mark-start (first g1-conc-mark-start))))
+       (writeln (process-g1-conc-mark-start (first g1-conc-mark-start))))
      )
      (when-not (nil? gc-pattern-g1-conc-mark-start)
      ( (println " match g1-mixed!!!!!")
-       (println (process-g1-conc-mark-end (first g1-conc-mark-end))))
+       (writeln (process-g1-conc-mark-end (first g1-conc-mark-end))))
      )
      (when-not (nil? g1-remark)
      ( (println " match g1-mixed!!!!!")
-     (println (process-g1-remark (first g1-remark))))
+     (writeln (process-g1-remark (first g1-remark))))
      )
       (println (str "end. :"))
   )
 )
 
-gc-pattern-g1-remark
 
 
 (defn test-let
@@ -109,6 +104,8 @@ gc-pattern-g1-remark
 ;-----------------------------------------------------------------------
 ; Convert Java GC log csv format
 ;-----------------------------------------------------------------------
+(process-gc-file "input/gc3.log" "data.txt")
+
 ;(process-gc-file "gc.log" "data.csv")
 ;(process-gc-file "gc.log" "data.csv")
 ; 433.905: [GC pause (G1 Evacuation Pause) (young) [Eden: 8944.0M(8944.0M)->0.0B(8920.0M) Survivors: 272.0M->296.0M Heap: 9418.3M(15.0G)->498.3M(15.0G)] [Times: user=0.71 sys=0.03, real=0.11 secs]
@@ -132,7 +129,7 @@ gc-pattern-g1-remark
 ;G1_CONC_MARK_END_TEST
 ;G1_CONC_MARK_ST_TEST
 
-(testt G1_REMART_TEST)
+;(testt G1_REMART_TEST)
 
 ;(test-let "433.905: [GC pause (G1 Evacuation Pause) (young)")
 
