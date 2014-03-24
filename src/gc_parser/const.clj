@@ -1,5 +1,59 @@
 (ns gc-parser.const)
 
+;;; CONSTANTS : Basic Patterns
+
+
+
+
+; Match for pause time "0.1566980 secs]"
+(def ^:constant pause-time "([\\d\\.]+) secs\\]")
+
+; Match : "K M G B"
+(def ^:constant order "[KMG]?B?")
+
+; Match : "8944.0M"
+;(def ^:constant number (str "\\d+" order  ) )
+(def ^:constant number (str "([\\d\\.]+)" order ) )
+
+; Match for Java heap space stat "524288K->32124K(2009792K)"
+(def ^:constant space "(\\d+)K->(\\d+)K\\((\\d+)K\\)")
+
+; Match for Java heap space stat "8944.0M(8944.0M)->0.0B(8920.0M)"
+; "([\\d\\.]+)K->([\\d\\.]+)K")
+;
+(def ^:constant space-g1-simple  (str number "->" number))
+
+;Match for Java heap space stat "8944.0M(8944.0M)->0.0B(8920.0M)"
+; "([\\d\\.]+)K\\(([\\d\\.]+)K\\)->([\\d\\.]+)K\\(([\\d\\.]+)K\\)")
+;
+;(def ^:constant space-g1 (str "number\\(number\\)" "->" number"\\(" number "\\)"))
+(def ^:constant space-g1 (str number "\\(" number "\\)" "->" number "\\(" number "\\)"))
+
+(def ^:constant space-g1-cleanup (str number "->" number "\\(" number "\\)"))
+
+
+; Match "Survivors: 272.0M->296.0M"
+(def ^:constant space-surv (str "Survivors: " space-g1-simple))
+
+; Match "Heap: 9418.3M(15.0G)->498.3M(15.0G)"
+(def ^:constant space-eden (str "Eden: " space-g1))
+
+; Match "Heap: 9418.3M(15.0G)->498.3M(15.0G)"
+(def ^:constant space-heap (str "Heap: " space-g1))
+
+; Match for Execution stat "[Times: user=0.24 sys=0.06, real=0.16 secs]"
+(def ^:constant exec-stat " \\[Times: user=([\\d\\.]+) sys=([\\d\\.]+), real=([\\d\\.]+) secs\\]")
+
+;  433.905: [GC pause (G1 Evacuation Pause) (young) [Eden: 8944.0M(8944.0M)->0.0B(8920.0M) Survivors: 272.0M->296.0M Heap: 9418.3M(15.0G)->498.3M(15.0G)] [Times: user=0.71 sys=0.03, real=0.11 secs]
+
+
+
+
+
+
+;; EXAMPLES:
+
+
 (def ^:constant g1-evac-test "433.905: [GC pause (G1 Evacuation Pause) (young) [Eden: 894422.022MB(8944.0M)->0.0M(8944.0M) Survivors: 272.0M->296.0M Heap: 9418.3M(15.0G)->498.3M(15.0G)] [Times: user=0.71 sys=0.03, real=0.11 secs]")
 (def ^:constant g1-evac-test-ok "433.905,g1evac,0.03,894422.022,8944.0,0.0,272.0,296.0,9418.3,15.0,498.3,15.0,0.71,0.03")
 (def ^:constant G1_YOUNG_TEST "755.441: [GC pause (young), 0.4418240 secs] [Eden: 9024.0M(9024.0M)->0.0B(8384.0M) Survivors: 800.0M->1248.0M Heap: 13.2G(16.0G)->5072.0M(16.0G)] [Times: user=5.41 sys=0.01, real=0.44 secs]")
