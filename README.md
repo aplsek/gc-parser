@@ -1,6 +1,8 @@
 # gc-parser
 
-A Clojure library designed to ... well, that part is up to you.
+gc-parser is a tool for parsing Hotspot G1 Garbage Collector log files. The parser is able to process the latest G1 GC log formats and produce an output summarizing each GC event.
+
+gc-parser is written in Clojure.
 
 ## Usage
 
