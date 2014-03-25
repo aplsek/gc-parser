@@ -80,7 +80,7 @@
       (writeln (process-g1-remark (first g1-remark)))
      )
       (when-not (nil? g1-cleanup)
-      (println " match g1-remark")
+      (println " match g1-cleanup")
       (writeln (process-g1-cleanup (first g1-cleanup)))
      )
       (println (str "end. :"))

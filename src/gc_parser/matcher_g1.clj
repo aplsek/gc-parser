@@ -86,9 +86,11 @@
 ;
 (defn gc-pattern-g1-remark []
    (let [timestamp  "([\\d\\.]+): \\[GC remark "
-         timestamp2 "([\\d\\.]+): \\[GC ref-proc,"
-         double_pause-time (str pause-time "\\]," pause-time "\\]")]
-    (re-pattern (str timestamp timestamp2 double_pause-time exec-stat))))
+         timestamp2 "([\\d\\.]+): \\[GC ref-proc, "
+         double_pause-time (str pause-time ", " pause-time)]
+    (println (str "   hello!!!!!!!!!!!!!: "))
+      (println (str timestamp timestamp2 double_pause-time exec-stat))
+     (re-pattern (str timestamp timestamp2 double_pause-time exec-stat))))
 
 
 ; 1162.042: [GC concurrent-mark-start]
@@ -173,6 +175,8 @@
 
 (defn process-g1-remark[entry]
     (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
+   (println (str "   hello!!!!!!!!!!!!!: "))
+      (println (str "   remark: " entry))
     (join \, [ts "g1remark"])))
 
 
