@@ -34,15 +34,14 @@
          g1-conc-mark-start (re-seq (gc-pattern-g1-conc-mark-start) line)
          g1-conc-mark-end (re-seq (gc-pattern-g1-conc-mark-end) line)
          g1-remark (re-seq (gc-pattern-g1-remark) line)
-         g1-clanup (re-seq (gc-pattern-g1-cleanup) line)
+         g1-cleanup (re-seq (gc-pattern-g1-cleanup) line)
          ]
      (when-not (nil? g1-evac)
                (println (str "match g1-evac!!!!! :" g1-evac))
               ; (writeln (str "writeln test"))
                (writeln (process-g1-evac (first g1-evac)))
-               (println (str "match g1-evtest write"))
-               (println (str "conc cl start:" g1-conc-cl-start ))
-               
+              ; (println (str "match g1-evtest write"))
+               ;(println (str "conc cl start:" g1-conc-cl-start ))              
      )
      (when-not (nil? g1-young)
             (println ( str " match g1-young = " g1-young ))
@@ -79,6 +78,10 @@
      (when-not (nil? g1-remark)
       (println " match g1-remark")
       (writeln (process-g1-remark (first g1-remark)))
+     )
+      (when-not (nil? g1-cleanup)
+      (println " match g1-remark")
+      (writeln (process-g1-cleanup (first g1-cleanup)))
      )
       (println (str "end. :"))
   )
@@ -134,15 +137,17 @@
 
 ;(testt G1_YOUNG_TEST)
 
-;(testt G1_CONCURRENT_REG_START_TEST )
+;(testt G1_MIXED_TEST)
 
+;(testt G1_CONCURRENT_REG_START_TEST )
 ;(testt G1_CONCURRENT_REG_END_TEST )
 
 
-;G1_CONC_MARK_END_TEST
+(testt G1_CLEANUP_TEST)
 ;G1_CONC_MARK_ST_TEST
 
-;(testt G1_REMART_TEST)
+; TODO:
+;(testt G1_REMARK_TEST)
 
 ;(test-let "433.905: [GC pause (G1 Evacuation Pause) (young)")
 

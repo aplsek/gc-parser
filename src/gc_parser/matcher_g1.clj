@@ -36,7 +36,7 @@
 (defn gc-pattern-g1-cleanup []
    (let [timestamp      "([\\d\\.]+): \\[GC cleanup "
         space-cleanup   (str space-g1-cleanup ", ")]
-     (println (str timestamp pause-time exec-stat))
+    ; (println (str timestamp pause-time exec-stat))
     (re-pattern (str timestamp space-cleanup pause-time exec-stat))))
 
 
@@ -67,25 +67,13 @@
     (re-pattern (str timestamp pause-time))))
 
 
-; 1162.042: [GC concurrent-mark-start]
-;
-(defn gc-pattern-g1-conc-mark-start []
-   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-mark-start\\] "]
-    (re-pattern (str timestamp))))
-
-
-; 1162.842: [GC concurrent-mark-end, 0.8000300 secs]
-;
-(defn gc-pattern-g1-conc-mark-end []
-   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-mark-end, "]
-    (re-pattern (str timestamp pause-time))))
-
 
 ; 1162.952: [GC concurrent-cleanup-start]
 ;
 (defn gc-pattern-g1-conc-cl-start []
-   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-cleanup-start\\] "]
+   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-cleanup-start\\]"]
     (re-pattern (str timestamp))))
+
 ; 1162.952: [GC concurrent-cleanup-end, 0.0001380 secs]
 ;
 (defn gc-pattern-g1-conc-cl-end []
@@ -97,14 +85,14 @@
 ;
 ;
 (defn gc-pattern-g1-remark []
-   (let [timestamp  "([\\d\\.]+): \\[GC remark, "]
+   (let [timestamp  "([\\d\\.]+): \\[GC remark "]
     (re-pattern (str timestamp pause-time))))
 
 
 ; 1162.042: [GC concurrent-mark-start]
 ;
 (defn gc-pattern-g1-conc-mark-start []
-   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-mark-start\\] "]
+   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-mark-start\\]"]
     (re-pattern (str timestamp))))
 
 
@@ -155,11 +143,11 @@
 
 (defn process-g1-conc-reg-start[entry]
     (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
-    (join \, [ts "g1conc-start"])))
+    (join \, [ts "g1conc-region-start"])))
 
 (defn process-g1-conc-reg-end[entry]
     (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
-    (join \, [ts "g1conc-end" pt ])))
+    (join \, [ts "g1conc-region-end" pt ])))
 
 
 (defn process-g1-conc-cl-start[entry]

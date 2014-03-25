@@ -80,10 +80,13 @@
 (def ^:constant G1_CONC_CLEAN_START_OK "1162.042,g1conc-end,,0.2950840")
 
 
-(def ^:constant G1_CONC_MARK_ST_TEST "1162.042: [GC concurrent-mark-start]")
-(def ^:constant G1_CONC_MARK_END_TEST "1162.842: [GC concurrent-mark-end, 0.8000300 secs]")
+(def ^:constant G1_CONC_MARK_START_TEST "1162.042: [GC concurrent-mark-start]")
 
-(def ^:constant G1_REMART_TEST "1162.846: [GC ref-proc, 0.0147680 secs], 0.0899440 secs] [Times: user=0.14 sys=0.00, real=0.09 secs]")
+(def ^:constant G1_CONC_MARK_END_TEST "1162.842: [GC concurrent-mark-end, 0.8000300 secs]")
+(def ^:constant G1_CONC_MARK_END_TEST_OK "")
+
+
+(def ^:constant G1_REMARK_TEST "1162.844: [GC remark 1162.846: [GC ref-proc, 0.0147680 secs], 0.0899440 secs] [Times: user=0.14 sys=0.00, real=0.09 secs]")
 
 
 
