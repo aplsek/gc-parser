@@ -85,8 +85,10 @@
 ;
 ;
 (defn gc-pattern-g1-remark []
-   (let [timestamp  "([\\d\\.]+): \\[GC remark "]
-    (re-pattern (str timestamp pause-time))))
+   (let [timestamp  "([\\d\\.]+): \\[GC remark "
+         timestamp2 "([\\d\\.]+): \\[GC ref-proc,"
+         double_pause-time (str pause-time "\\]," pause-time "\\]")]
+    (re-pattern (str timestamp timestamp2 double_pause-time exec-stat))))
 
 
 ; 1162.042: [GC concurrent-mark-start]

@@ -37,7 +37,7 @@
          g1-cleanup (re-seq (gc-pattern-g1-cleanup) line)
          ]
      (when-not (nil? g1-evac)
-               (println (str "match g1-evac!!!!! :" g1-evac))
+               (println (str "match g1-evac :" g1-evac))
               ; (writeln (str "writeln test"))
                (writeln (process-g1-evac (first g1-evac)))
               ; (println (str "match g1-evtest write"))
@@ -48,11 +48,11 @@
             (writeln (process-g1-young (first g1-young)))
      )
      (when-not (nil? g1-mixed)
-            (println " match g1-mixed!!!!!")
+            (println " match g1-mixed")
              (writeln (process-g1-mixed (first g1-mixed)))
      )
       (when-not (nil? g1-conc-reg-st)
-            (println " match g1-mixed!!!!!")
+            (println " match g1-conc-reg-st")
              (writeln (process-g1-conc-reg-start (first g1-conc-reg-st)))
      )
      (when-not (nil? g1-conc-reg-en)
@@ -92,12 +92,21 @@
   (let [line "I am line"]
     (println (str "test let:" line))
     (when-not (nil? line)
-      (println " match g1-mixed!!!!!")
+      (println " match g1-mixed...")
     
      
     )
   )
 )
+
+
+
+(defn testt
+  [x]
+  (let [writeln java.lang.System/out]
+    (resolve_line x writeln)
+    )
+  )
 
 (defn test-let
   [x]
@@ -143,7 +152,7 @@
 ;(testt G1_CONCURRENT_REG_END_TEST )
 
 
-(testt G1_CLEANUP_TEST)
+;(testt G1_REMARK_TEST)
 ;G1_CONC_MARK_ST_TEST
 
 ; TODO:
