@@ -17,7 +17,11 @@
           (resolve_line line writeln))))))
 
 
-
+;;;;;
+;
+;
+; TODO: add ParOld processing
+;
 (defn resolve_line
   [line writeln]
    (let [g1-evac  (re-seq (minor-gc-pattern-g1-evac) line)
@@ -33,57 +37,64 @@
          g1-clanup (re-seq (gc-pattern-g1-cleanup) line)
          ]
      (when-not (nil? g1-evac)
-             ( (println (str "match g1-evac!!!!! :" g1-evac))
-               (writeln (str "writeln test"))
+               (println (str "match g1-evac!!!!! :" g1-evac))
+              ; (writeln (str "writeln test"))
                (writeln (process-g1-evac (first g1-evac)))
-               (println (str "match g1-evtest write null"))
-               )
+               (println (str "match g1-evtest write"))
+               (println (str "conc cl start:" g1-conc-cl-start ))
+               
      )
      (when-not (nil? g1-young)
-           ( (println ( str " match g1-young = " g1-young ))
-             (writeln (process-g1-young (first g1-young))))
+            (println ( str " match g1-young = " g1-young ))
+            (writeln (process-g1-young (first g1-young)))
      )
      (when-not (nil? g1-mixed)
-           ( (println " match g1-mixed!!!!!")
-             (writeln (process-g1-mixed (first g1-mixed))))
-     )
-      (when-not (nil? g1-mixed)
-           ( (println " match g1-mixed!!!!!")
-             (writeln (process-g1-mixed (first g1-mixed))))
+            (println " match g1-mixed!!!!!")
+             (writeln (process-g1-mixed (first g1-mixed)))
      )
       (when-not (nil? g1-conc-reg-st)
-           ( (println " match g1-mixed!!!!!")
-             (writeln (process-g1-conc-reg-start (first g1-conc-reg-st))))
+            (println " match g1-mixed!!!!!")
+             (writeln (process-g1-conc-reg-start (first g1-conc-reg-st)))
      )
      (when-not (nil? g1-conc-reg-en)
-     ( (println " match g1-mixed!!!!!")
-       (writeln (process-g1-conc-reg-end (first g1-conc-reg-en))))
+      (println " match cocn reg en")
+       (writeln (process-g1-conc-reg-end (first g1-conc-reg-en)))
      )
-     (when-not (nil? gc-pattern-g1-conc-cl-start)
-     ( (println " match g1-mixed!!!!!")
-       (writeln (process-g1-conc-cl-start (first g1-conc-cl-start))))
+     (when-not (nil? g1-conc-cl-start)
+      (println " match conc cl start")
+       (writeln (process-g1-conc-cl-start (first g1-conc-cl-start)))
      )
-     (when-not (nil? gc-pattern-g1-conc-cl-end)
-     ( (println " match g1-mixed!!!!!")
-       (writeln (process-g1-conc-cl-end (first g1-conc-cl-end))))
+     (when-not (nil? g1-conc-cl-end)
+      (println " match conc cl end")
+       (writeln (process-g1-conc-cl-end (first g1-conc-cl-end)))
      )
-      (when-not (nil? gc-pattern-g1-conc-mark-start)
-     ( (println " match g1-mixed!!!!!")
-       (writeln (process-g1-conc-mark-start (first g1-conc-mark-start))))
+      (when-not (nil? g1-conc-mark-start)
+      (println " match conc mark end")
+       (writeln (process-g1-conc-mark-start (first g1-conc-mark-start)))
      )
-     (when-not (nil? gc-pattern-g1-conc-mark-start)
-     ( (println " match g1-mixed!!!!!")
-       (writeln (process-g1-conc-mark-end (first g1-conc-mark-end))))
+     (when-not (nil? g1-conc-mark-end)
+      (println " match g1 conc mark st")
+       (writeln (process-g1-conc-mark-end (first g1-conc-mark-end)))
      )
      (when-not (nil? g1-remark)
-     ( (println " match g1-mixed!!!!!")
-     (writeln (process-g1-remark (first g1-remark))))
+      (println " match g1-remark")
+      (writeln (process-g1-remark (first g1-remark)))
      )
       (println (str "end. :"))
   )
 )
 
-
+(defn www
+  []
+  (let [line "I am line"]
+    (println (str "test let:" line))
+    (when-not (nil? line)
+      (println " match g1-mixed!!!!!")
+    
+     
+    )
+  )
+)
 
 (defn test-let
   [x]
@@ -99,6 +110,8 @@
   (process-gc-file "input/one.log" "data.txt")
   )
 
+
+;(www)
 
 
 ;-----------------------------------------------------------------------
