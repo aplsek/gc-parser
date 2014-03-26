@@ -9,10 +9,25 @@
 
 
 
+(def headers_ParOld (join SEP  ["timestamp" "gc.type" "pause.time"
+			          "young.start" "young.end" "young.max"
+				 	  "heap.start" "heap.end" "heap.max"
+				      "time.user" "time.sys" "time.real"
+					  "old.start" "old.end" "old.max"
+					  "perm.start" "perm.end" "perm.max"]))	
+
+(def headers_G1 (join SEP  ["timestamp" "gc.type" "pause.time"
+			          "young.occ.start" "young.size.start" "young.occ.end" "young.size.end"
+             "survivor.start" "survivor.end"
+				 	  "heap.occ.start" "heap.size.start" "heap.occ.end" "heap.size.end"
+				      "time.user" "time.sys" "time.real" ]))	
+
+
 (defn process-gc-file [infile outfile]
   (let [gcdata (line-seq (clojure.java.io/reader (clojure.java.io/file infile)))]
     (with-open [w (clojure.java.io/writer outfile)]
       (let [writeln (fn [x] (.write w (str x "\n")))]
+        (writeln headers_G1)
         (doseq [line gcdata]
           (resolve_line line writeln))))))
 

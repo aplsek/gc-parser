@@ -13,7 +13,8 @@
 
 ; Match : "8944.0M"
 ;(def ^:constant number (str "\\d+" order  ) )
-(def ^:constant number (str "([\\d\\.]+)" order ) )
+;(def ^:constant number (str "([\\d\\.]+)" order ) )
+(def ^:constant number (str "([\\d\\.]+" order ")" ) )
 
 ; Match for Java heap space stat "524288K->32124K(2009792K)"
 (def ^:constant space "(\\d+)K->(\\d+)K\\((\\d+)K\\)")
@@ -48,7 +49,11 @@
 
 
 
+;;; OUTPUT formatting:
 
+;(def ^:constant SEP " ")
+(def ^:constant SEP ",")
+;(def ^:constant SEP " | ")
 
 
 ;; EXAMPLES:
