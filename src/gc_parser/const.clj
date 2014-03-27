@@ -99,3 +99,23 @@
 ;1162.952: [GC concurrent-cleanup-start]
 ;1162.952: [GC concurrent-cleanup-end, 0.0001380 secs]
 
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;; Helper methods
+
+(defn parse-int [s]
+   (Integer. (re-find  #"\d+" s )))
+
+(defn toMB
+  [x]
+  (println (str "toMB:" x))
+  (cond
+    (.endsWith x "G") (* (parse-int x) 1000)
+    (.endsWith x "K") (double (/ (parse-int x) 1000))
+    (.endsWith x "M") (parse-int x)  
+    (.endsWith x "B") (parse-int x)  
+    :else x
+   )
+  )

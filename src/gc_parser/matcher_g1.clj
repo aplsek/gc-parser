@@ -1,5 +1,5 @@
-(ns gc-parser.matcher_g1 
-    (:require 
+(ns gc-parser.matcher_g1
+    (:require
                 [gc-parser.const :refer :all]
                 ))
 
@@ -29,7 +29,7 @@
         eden        (str " \\[" space-eden)
         survivor    (str " " space-surv " ")
         heap        (str space-heap "\\]")]
-     (println (str timestamp pause-time eden survivor heap exec-stat))
+     ;(println (str timestamp pause-time eden survivor heap exec-stat))
     (re-pattern (str timestamp pause-time eden survivor heap exec-stat))))
 ;timestamp pause-time eden survivor heap exec-stat
 
@@ -51,7 +51,7 @@
         eden        (str " \\[" space-eden)
         survivor    (str " " space-surv " ")
         heap        (str space-heap "\\]")]
-     (println (str timestamp pause-time eden survivor heap exec-stat))
+    ; (println (str timestamp pause-time eden survivor heap exec-stat))
     (re-pattern (str timestamp pause-time eden survivor heap exec-stat))))
 
 ; 1161.747: [GC concurrent-root-region-scan-start]
@@ -78,6 +78,7 @@
 ;
 (defn gc-pattern-g1-conc-cl-end []
    (let [timestamp  "([\\d\\.]+): \\[GC concurrent-cleanup-end, "]
+     (println (str timestamp pause-time))
     (re-pattern (str timestamp pause-time))))
 
 
@@ -88,8 +89,8 @@
    (let [timestamp  "([\\d\\.]+): \\[GC remark "
          timestamp2 "([\\d\\.]+): \\[GC ref-proc, "
          double_pause-time (str pause-time ", " pause-time)]
-    (println (str "   hello!!!!!!!!!!!!!: "))
-      (println (str timestamp timestamp2 double_pause-time exec-stat))
+    ;(println (str "   hello!!!!!!!!!!!!!: "))
+    ;  (println (str timestamp timestamp2 double_pause-time exec-stat))
      (re-pattern (str timestamp timestamp2 double_pause-time exec-stat))))
 
 
@@ -107,19 +108,30 @@
     (re-pattern (str timestamp pause-time))))
 
 
+(defn oldOccup [yob yoa sb sa hob hoa]
+      (let [oob  ( - (hob (+ (yob sb))))
+            ooa  ( - (hoa (+ (yoa sa))))]
+        (str oob ooa))
+)
+
+(defn oldsize [ysb ysa sb sa hsb hsa]
+      (let [osb  ( - (hsb (+ (ysb sb))))
+            osa  ( - (hsa (+ (ysa sa))))]
+        (str osb osa))  
+)
 
 
-;433.905: 
+;433.905:
 ;  yob  youngGen occupation :8944.0M
 ;  ysb YoungGen size before: (8944.0M)
 ;  yoa  Young gen occupation after :->0.0B
-;  ysa Yougn Gen size after: (8920.0M) 
+;  ysa Yougn Gen size after: (8920.0M)
 ;  sb Survivors occupation before: 272.0M->
 ;  sa Survivor occupation after:  296.0M
 ;  hob  Heap occ before: 9418.3M
 ;  hsb heap size before (15.0G)
 ;  hoa heap occ after -> 498.3M(
-;  hsa heap size after 15.0G)] 
+;  hsa heap size after 15.0G)]
 ;  ut  user time [Times: user=0.71
 ;  kt sys time  sys=0.03,
 ;  rt real time : real=0.11 secs]
@@ -133,10 +145,17 @@
 
 
 (defn process-g1-young [entry]
-  (let [[a ts pt yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry]
-    (println (str "Hello process-g1-young:" entry))
-    (println (str "   " ))
-    (join SEP [ts "g1young" pt yob ysb yoa sb sa hob hsb hoa hsa ut kt rt])))
+  (let [[a ts pt yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry
+        ;heaps (doall (map toMB [yob ysb yoa sb sa hob hsb hoa c]))
+       ; hh heaps
+        ]
+    ;(println (str "g1-young:" entry))
+   ; (println (str "g1-young:"  heaps))
+    ;(println (str "   " ))
+    ;(join SEP [ts "g1young" pt (toMB yob) (toMB ysb) yoa sb sa hob hsb hoa hsa ut kt rt])))
+    (join SEP [ts "g1young" pt (toMB yob) (toMB ysb)(toMB yoa) (toMB sb) (toMB sa) (toMB hob) (toMB hsb) (toMB hoa) ut kt rt])))
+    ;(join SEP [ts "g1young" pt (toMB yob) ysb (toMB yoa) (toMB sb) (toMB sa) (toMB hob) (toMB hsb) (toMB hoa) ut kt rt])))
+
 
 (defn process-g1-mixed [entry]
   (let [[a ts pt yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry]
@@ -156,7 +175,8 @@
     (join SEP [ts "g1conc-cl-start"])))
 
 (defn process-g1-conc-cl-end[entry]
-    (let [[a ts pt ys ye ym hs he hm pt ut kt rt & e] entry]
+    (let [[a ts pt ] entry]
+      (println (str "g1conc-cl-end:" entry  "  pt= " pt "  ts= " ts "  a= " a))
     (join SEP [ts "g1conc-cl-end" pt] )))
 
 
@@ -166,7 +186,8 @@
     (join SEP [ts "g1conc-mark-start"])))
 
 (defn process-g1-conc-mark-end[entry]
-    (let [[a ts pt ys ye ym hs he hm pt ut kt rt & e] entry]
+    (let [[a ts pt ] entry]
+      (println (str "g1conc-cl-end:" entry  "  pt= " pt "  ts= " ts "  a= " a))
     (join SEP [ts "g1conc-mark-end" pt] )))
 
 
@@ -182,7 +203,4 @@
     ;(println (str "Hello process-g1-evac:" entry))
     ;(println (str "   " ))
     (join SEP [ts "g1cleanup" pt yob ysb yoa sb sa hob hoa hsa ut kt rt])))
-
-
-
 
