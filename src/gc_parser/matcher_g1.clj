@@ -29,7 +29,7 @@
         eden        (str " \\[" space-eden)
         survivor    (str " " space-surv " ")
         heap        (str space-heap "\\]")]
-     (println (str timestamp pause-time eden survivor heap exec-stat))
+     ;(println (str timestamp pause-time eden survivor heap exec-stat))
     (re-pattern (str timestamp pause-time eden survivor heap exec-stat))))
 ;timestamp pause-time eden survivor heap exec-stat
 
@@ -51,7 +51,7 @@
         eden        (str " \\[" space-eden)
         survivor    (str " " space-surv " ")
         heap        (str space-heap "\\]")]
-     (println (str timestamp pause-time eden survivor heap exec-stat))
+    ; (println (str timestamp pause-time eden survivor heap exec-stat))
     (re-pattern (str timestamp pause-time eden survivor heap exec-stat))))
 
 ; 1161.747: [GC concurrent-root-region-scan-start]
@@ -78,6 +78,7 @@
 ;
 (defn gc-pattern-g1-conc-cl-end []
    (let [timestamp  "([\\d\\.]+): \\[GC concurrent-cleanup-end, "]
+     (println (str timestamp pause-time))
     (re-pattern (str timestamp pause-time))))
 
 
@@ -88,8 +89,8 @@
    (let [timestamp  "([\\d\\.]+): \\[GC remark "
          timestamp2 "([\\d\\.]+): \\[GC ref-proc, "
          double_pause-time (str pause-time ", " pause-time)]
-    (println (str "   hello!!!!!!!!!!!!!: "))
-      (println (str timestamp timestamp2 double_pause-time exec-stat))
+    ;(println (str "   hello!!!!!!!!!!!!!: "))
+    ;  (println (str timestamp timestamp2 double_pause-time exec-stat))
      (re-pattern (str timestamp timestamp2 double_pause-time exec-stat))))
 
 
@@ -107,6 +108,17 @@
     (re-pattern (str timestamp pause-time))))
 
 
+(defn oldOccup [yob yoa sb sa hob hoa]
+      (let [oob  ( - (hob (+ (yob sb)))) 
+            ooa  ( - (hoa (+ (yoa sa))))]
+        (str oob ooa))
+)
+
+(defn oldsize [ysb ysa sb sa hsb hsa]
+      (let [osb  ( - (hsb (+ (ysb sb)))) 
+            osa  ( - (hsa (+ (ysa sa))))]
+        (str osb osa))  
+)
 
 
 ;433.905: 
@@ -125,66 +137,72 @@
 ;  rt real time : real=0.11 secs]
 ; PauseTime = G1 Evac does not report pause time separately, only in Times
 (defn process-g1-evac [entry]
-  (let [[a ts yob ysb yoa ysa sb sa hob hoa hsa ut kt rt & e] entry]
+  (let [[a ts yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry]
     ;(println (str "Hello process-g1-evac:" entry))
     ;(println (str "   " ))
-    (join \, [ts "g1evac" rt yob ysb yoa sb sa hob hoa hsa ut kt rt])))
+    (join SEP [ts "g1evac" rt yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt])))
 
 
 
 (defn process-g1-young [entry]
-  (let [[a ts yob ysb yoa ysa sb sa hob hoa hsa ut kt rt & e] entry]
-    (println (str "Hello process-g1-young:" entry))
-    (println (str "   " ))
-    (join \, [ts "g1young" rt yob ysb yoa sb sa hob hoa hsa ut kt rt])))
+  (let [[a ts pt yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry
+        ;heaps (doall (map toMB [yob ysb yoa sb sa hob hsb hoa c]))
+       ; hh heaps
+        ]
+    ;(println (str "g1-young:" entry))
+   ; (println (str "g1-young:"  heaps))
+    ;(println (str "   " ))
+    ;(join SEP [ts "g1young" pt (toMB yob) (toMB ysb) yoa sb sa hob hsb hoa hsa ut kt rt])))
+    (join SEP [ts "g1young" pt (toMB yob) (toMB ysb)(toMB yoa) (toMB sb) (toMB sa) (toMB hob) (toMB hsb) (toMB hoa) ut kt rt])))
+    ;(join SEP [ts "g1young" pt (toMB yob) ysb (toMB yoa) (toMB sb) (toMB sa) (toMB hob) (toMB hsb) (toMB hoa) ut kt rt])))
+
 
 (defn process-g1-mixed [entry]
-  (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
-    (join \, [ts "g1mixed" pt
-              ys ye ym
-              hs he hm
-              ut kt rt])))
+  (let [[a ts pt yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry]
+    (join SEP [ts "g1mixed" pt yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt])))
 
 (defn process-g1-conc-reg-start[entry]
     (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
-    (join \, [ts "g1conc-region-start"])))
+    (join SEP [ts "g1conc-region-start"])))
 
 (defn process-g1-conc-reg-end[entry]
-    (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
-    (join \, [ts "g1conc-region-end" pt ])))
+    (let [[a ts pt yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry]
+    (join SEP [ts "g1conc-region-end" pt])))
 
 
 (defn process-g1-conc-cl-start[entry]
     (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
-    (join \, [ts "g1conc-cl-start"])))
+    (join SEP [ts "g1conc-cl-start"])))
 
 (defn process-g1-conc-cl-end[entry]
-    (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
-    (join \, [ts "g1conc-cl-end"])))
+    (let [[a ts pt ] entry]
+      (println (str "g1conc-cl-end:" entry  "  pt= " pt "  ts= " ts "  a= " a))
+    (join SEP [ts "g1conc-cl-end" pt] )))
 
 
 
 (defn process-g1-conc-mark-start[entry]
     (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
-    (join \, [ts "g1conc-mark-start"])))
+    (join SEP [ts "g1conc-mark-start"])))
 
 (defn process-g1-conc-mark-end[entry]
-    (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
-    (join \, [ts "g1conc-mark-end"])))
+    (let [[a ts pt ] entry]
+      (println (str "g1conc-cl-end:" entry  "  pt= " pt "  ts= " ts "  a= " a))
+    (join SEP [ts "g1conc-mark-end" pt] )))
 
 
 (defn process-g1-remark[entry]
-    (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
-   (println (str "   hello!!!!!!!!!!!!!: "))
-      (println (str "   remark: " entry))
-    (join \, [ts "g1remark"])))
+    (let [[a ts ts2 pt2 pt1 ys ye ym hs he hm pt ut kt rt & e] entry]
+   ;(println (str "   hello!!!!!!!!!!!!!: "))
+     ; (println (str "   remark: " entry))
+    (join SEP [ts "g1remark" pt1])))
 
 
 (defn process-g1-cleanup [entry]
-  (let [[a ts yob ysb yoa ysa sb sa hob hoa hsa ut kt rt & e] entry]
+  (let [[a ts yob ysb yoa pt ysa sb sa hob hoa hsa ut kt rt & e] entry]
     ;(println (str "Hello process-g1-evac:" entry))
     ;(println (str "   " ))
-    (join \, [ts "g1cleanup" rt yob ysb yoa sb sa hob hoa hsa ut kt rt])))
+    (join SEP [ts "g1cleanup" pt yob ysb yoa sb sa hob hoa hsa ut kt rt])))
 
 
 

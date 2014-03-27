@@ -13,7 +13,8 @@
 
 ; Match : "8944.0M"
 ;(def ^:constant number (str "\\d+" order  ) )
-(def ^:constant number (str "([\\d\\.]+)" order ) )
+;(def ^:constant number (str "([\\d\\.]+)" order ) )
+(def ^:constant number (str "([\\d\\.]+" order ")" ) )
 
 ; Match for Java heap space stat "524288K->32124K(2009792K)"
 (def ^:constant space "(\\d+)K->(\\d+)K\\((\\d+)K\\)")
@@ -48,7 +49,11 @@
 
 
 
+;;; OUTPUT formatting:
 
+;(def ^:constant SEP " ")
+(def ^:constant SEP ",")
+;(def ^:constant SEP " | ")
 
 
 ;; EXAMPLES:
@@ -93,4 +98,26 @@
 ;1162.934: [GC cleanup 11G->11G(16G), 0.0170410 secs] [Times: user=0.18 sys=0.00, real=0.01 secs]
 ;1162.952: [GC concurrent-cleanup-start]
 ;1162.952: [GC concurrent-cleanup-end, 0.0001380 secs]
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;; Helper methods
+
+(defn parse-int [s]
+   (Integer. (re-find  #"\d+" s )))
+
+(defn toMB 
+  [x]
+  (println (str "toMB:" x))
+  (cond
+    (.endsWith x "G") (* (parse-int x) 1000)
+    (.endsWith x "K") (double (/ (parse-int x) 1000)) 
+    (.endsWith x "M") (parse-int x)   
+    (.endsWith x "B") (parse-int x)  
+    :else x
+   )
+  )
+
 
