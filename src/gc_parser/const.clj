@@ -110,7 +110,6 @@
 
 (defn toMB
   [x]
-  (println (str "toMB:" x))
   (cond
     (.endsWith x "G") (* (parse-int x) 1000)
     (.endsWith x "K") (double (/ (parse-int x) 1000))
