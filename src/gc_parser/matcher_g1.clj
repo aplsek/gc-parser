@@ -109,17 +109,15 @@
 
 
 (defn oldOccup [yob yoa sb sa hob hoa]
-  (println (str "oldOccup:" yob yoa sb sa hob hoa ))    
-  (let [oob  ( - ((toMB hob) (+ ((toMB yob) (toMB sb)))))
-        ooa  ( - ((toMB hoa) (+ ((toMB yoa) (toMB sa)))))]
-    (str oob ooa))
+  ;(println (str "oldOccup run:" yob ))    
+  (let []
+    (join SEP [(- hob (+ yob sb)) ( - hoa (+ yoa sa)) ]))
+    ; (join SEP [oob ooa]))
 )
 
 (defn oldsize [ysb ysa sb sa hsb hsa]
-      (let [osb  ( - (hsb (+ (ysb sb))))
-            osa  ( - (hsa (+ (ysa sa))))]
-        (str osb osa))  
-      (join SEP [osb osa])
+      (join SEP [( - hsb (+ ysb sb)) ( - hsa (+ ysa sa))
+                                  ])
 )
 
 
@@ -140,31 +138,25 @@
 ; PauseTime = G1 Evac does not report pause time separately, only in Times
 (defn process-g1-evac [entry]
   (let [[a ts yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry
-        ;oldGenOcc (oldOccup yob yoa sb sa hob hoa)
-        ;oldGenSize (oldsize ysb ysa sb sa hsb hsa)
+        oldGenOcc (oldOccup yob yoa sb sa hob hoa)
+        oldGenSize (oldsize ysb ysa sb sa hsb hsa)
         ]
-    ;(println (str "Hello process-g1-evac:" entry))
-    ;(println (str "   " ))
-    (join SEP [ts "g1evac" rt yob ysb yoa sb sa hob hsb hoa ut kt rt])))
-
-
+    (join SEP [ts "g1evac" rt yob ysb yoa sb sa hob hsb hoa oldGenOcc oldGenSize ut kt rt])))
 
 (defn process-g1-young [entry]
   (let [[a ts pt yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry
-        ;heaps (doall (map toMB [yob ysb yoa sb sa hob hsb hoa c]))
-       ; hh heaps
+        oldGenOcc (oldOccup yob yoa sb sa hob hoa)
+        oldGenSize (oldsize ysb ysa sb sa hsb hsa)
         ]
-    ;(println (str "g1-young:" entry))
-   ; (println (str "g1-young:"  heaps))
-    ;(println (str "   " ))
-    (join SEP [ts "g1young" pt yob  ysb yoa sb sa hob hsb hoa hsa ut kt rt])))
-    ;(join SEP [ts "g1young" pt (toMB yob) (toMB ysb)(toMB yoa) (toMB sb) (toMB sa) (toMB hob) (toMB hsb) (toMB hoa) ut kt rt])))
-    ;(join SEP [ts "g1young" pt (toMB yob) ysb (toMB yoa) (toMB sb) (toMB sa) (toMB hob) (toMB hsb) (toMB hoa) ut kt rt])))
-
-
+   
+    (join SEP [ts "g1young" pt yob  ysb yoa sb sa hob hsb hoa hsa oldGenOcc oldGenSize ut kt rt])))
+ 
 (defn process-g1-mixed [entry]
-  (let [[a ts pt yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry]
-    (join SEP [ts "g1mixed" pt yob ysb yoa sb sa hob hsb hoa ut kt rt])))
+  (let [[a ts pt yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry
+        oldGenOcc (oldOccup yob yoa sb sa hob hoa)
+        oldGenSize (oldsize ysb ysa sb sa hsb hsa)
+        ]
+    (join SEP [ts "g1mixed" pt yob ysb yoa sb sa hob hsb hoa oldGenOcc oldGenSize ut kt rt])))
 
 (defn process-g1-conc-reg-start[entry]
     (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
@@ -208,4 +200,3 @@
     ;(println (str "Hello process-g1-cleanup:" entry))
     ;(println (str "   " ))
     (join SEP [ts "g1cleanup" pt " " " " " " " " " " " " " " hob hoa hsa])))
-
