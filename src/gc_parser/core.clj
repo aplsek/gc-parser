@@ -20,6 +20,7 @@
          "young.occ.start" "young.size.start" "young.occ.end" "young.size.end"
              "survivor.start" "survivor.end"
  "heap.occ.start" "heap.size.start" "heap.occ.end" "heap.size.end"
+ "old.occ.start" "old.occ.end" "old.size.start" "old.size.end" "promoRate"
      "time.user" "time.sys" "time.real" ]))
 
 
@@ -54,17 +55,17 @@
      (when-not (nil? g1-evac)
                (println (str "match g1-evac :" g1-evac))
               ; (writeln (str "writeln test"))
-               (writeln (process-g1-evac (map toMB (first g1-evac))))
-              ; (println (str "match g1-evtest write"))
-               ;(println (str "conc cl start:" g1-conc-cl-start ))              
+               (writeln (process-g1-evac "g1evac" (map toMB (first g1-evac))))
+              ;(println (str "match g1-evtest write"))
+              ;(println (str "conc cl start:" g1-conc-cl-start ))              
      )
      (when-not (nil? g1-young)
            ; (println ( str " match g1-young = " g1-young ))
-            (writeln (process-g1-young (map toMB (first g1-young))))
+            (writeln (process-g1-event "g1young" (map toMB (first g1-young))))
      )
      (when-not (nil? g1-mixed)
             ;(println " match g1-mixed")
-             (writeln (process-g1-mixed (map toMB (first g1-mixed))))
+             (writeln (process-g1-event "g1mixed" (map toMB (first g1-mixed))))
      )
       (when-not (nil? g1-conc-reg-st)
            ; (println " match g1-conc-reg-st")
@@ -105,105 +106,8 @@
   )
 )
 
-(defn www
-  []
-  (let [line "I am line"]
-    (println (str "test let:" line))
-    (when-not (nil? line)
-      (println " match g1-mixed...")
-   
-     
-    )
-  )
-)
+(def not-nil? (comp not nil?))
 
-
-
-(defn testt
-  [x]
-  (let [writeln java.lang.System/out]
-    (resolve_line x writeln)
-    )
-  )
-
-(defn test-let
-  [x]
-  (let [[a ts ys ye] x]
-    (println (str "test let:" a ts ys ye))
-    )
-  )
-
-(defn main
-  "I don't do a whole lot."
-  [& args]
-  (println "Hello, World!  start :")
-  (process-gc-file "input/one.log" "data.txt")
-  )
-
-(defn mmap
-  [x]
-   (println "mmpa test : " x)
-   (let [res (map toMB x)]
-     )
-   res
-   (println (str res))
-   (println "mmpa test done")
-  )
-
-
-(defn conc
-   [line]
-   (println "Hello, World!  start :" line)
-   (println (process-g1-young (first (re-seq (minor-gc-pattern-g1-young) line))))
-  (println "done")
-)
-
-(defn tt
-  []
-  (println (str (toMB "9024.0G")))
-  (println (str (toMB "9024K")))
-  (println (str (toMB "9024M")))
-   (println (str (toMB "9024B")))
-   (println (str (toMB "g1young")))
-  )
-
-(defn ttt
-  []
-  (let [res (map toMB ["9024.0G" "9024.0M" "9024.0K"] )]
-  (println (str res ))
-  res
-  )
-)
-
-
-;(www)
-
-;(conc "755.441: [GC pause (young), 0.4418240 secs] [Eden: 9024.0M(9024.0M)->0.0B(8384.0M) Survivors: 800.0M->1248.0M Heap: 13.2G(16.0G)->5072.0M(16.0G)] [Times: user=5.41 sys=0.01, real=0.44 secs]")
-
-;(tt)
-;(ttt)
-
-(defn oot [x] 
-  (let [[b e] x]
-  (println (str "  " b " " e " ")))
-)
-
-(defn desc [p] 
- (let [[x y] p]
-         (println "x:" x "y:" y))
-  )
-
-(defn mm [p] 
- (
-         (map toMB p ))
-  )
-
-;(def point ["5M" "7G" "33" "44"])
-
-;(desc (mm point))
-;(oot point)
-
-;(desc (map toMB point ))
 
 
 ;-----------------------------------------------------------------------

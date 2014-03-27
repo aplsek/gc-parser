@@ -108,6 +108,14 @@
     (re-pattern (str timestamp pause-time))))
 
 
+(defn promoRate [yob yoa sb sa hob hoa]
+   (-  ( - hoa (+ yoa sa)) (- hob (+ yob sb)))
+  )
+
+(defn allocRate [yob yoa sb sa hob hoa]
+  ;; TODO:?? need the previous GC event to compute
+)
+
 (defn oldOccup [yob yoa sb sa hob hoa]
   ;(println (str "oldOccup run:" yob ))    
   (let []
@@ -136,27 +144,31 @@
 ;  kt sys time  sys=0.03,
 ;  rt real time : real=0.11 secs]
 ; PauseTime = G1 Evac does not report pause time separately, only in Times
-(defn process-g1-evac [entry]
+(defn process-g1-evac [name entry]
   (let [[a ts yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry
         oldGenOcc (oldOccup yob yoa sb sa hob hoa)
         oldGenSize (oldsize ysb ysa sb sa hsb hsa)
+        promo (promoRate ysb ysa sb sa hsb hsa)
         ]
-    (join SEP [ts "g1evac" rt yob ysb yoa sb sa hob hsb hoa oldGenOcc oldGenSize ut kt rt])))
+    (println (str name " : " entry))
+    (join SEP [ts name rt yob ysb yoa sb sa hob hsb hoa oldGenOcc oldGenSize promo ut kt rt])))
 
-(defn process-g1-young [entry]
+(defn process-g1-event [name entry]
   (let [[a ts pt yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry
         oldGenOcc (oldOccup yob yoa sb sa hob hoa)
         oldGenSize (oldsize ysb ysa sb sa hsb hsa)
+        promo (promoRate ysb ysa sb sa hsb hsa)
         ]
-   
-    (join SEP [ts "g1young" pt yob  ysb yoa sb sa hob hsb hoa hsa oldGenOcc oldGenSize ut kt rt])))
+    (println (str name " : " entry))
+    (join SEP [ts name pt yob ysb yoa sb sa hob hsb hoa hsa oldGenOcc oldGenSize promo ut kt rt])))
  
-(defn process-g1-mixed [entry]
-  (let [[a ts pt yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry
-        oldGenOcc (oldOccup yob yoa sb sa hob hoa)
-        oldGenSize (oldsize ysb ysa sb sa hsb hsa)
-        ]
-    (join SEP [ts "g1mixed" pt yob ysb yoa sb sa hob hsb hoa oldGenOcc oldGenSize ut kt rt])))
+;(defn process-g1-mixed [name entry]
+;  (let [[a ts pt yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry
+;        oldGenOcc (oldOccup yob yoa sb sa hob hoa)
+;        oldGenSize (oldsize ysb ysa sb sa hsb hsa)
+;        promo (promoRate ysb ysa sb sa hsb hsa)
+;        ]
+;    (join SEP [ts name pt yob ysb yoa sb sa hob hsb hoa oldGenOcc oldGenSize promo ut kt rt])))
 
 (defn process-g1-conc-reg-start[entry]
     (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
