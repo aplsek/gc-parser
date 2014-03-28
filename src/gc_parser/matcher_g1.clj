@@ -78,7 +78,7 @@
 ;
 (defn gc-pattern-g1-conc-cl-end []
    (let [timestamp  "([\\d\\.]+): \\[GC concurrent-cleanup-end, "]
-     (println (str timestamp pause-time))
+    ; (println (str timestamp pause-time))
     (re-pattern (str timestamp pause-time))))
 
 
@@ -89,8 +89,6 @@
    (let [timestamp  "([\\d\\.]+): \\[GC remark "
          timestamp2 "([\\d\\.]+): \\[GC ref-proc, "
          double_pause-time (str pause-time ", " pause-time)]
-    ;(println (str "   hello!!!!!!!!!!!!!: "))
-    ;  (println (str timestamp timestamp2 double_pause-time exec-stat))
      (re-pattern (str timestamp timestamp2 double_pause-time exec-stat))))
 
 
@@ -120,7 +118,6 @@
   ;(println (str "oldOccup run:" yob ))    
   (let []
     (join SEP [(- hob (+ yob sb)) ( - hoa (+ yoa sa)) ]))
-    ; (join SEP [oob ooa]))
 )
 
 (defn oldsize [ysb ysa sb sa hsb hsa]
@@ -150,7 +147,6 @@
         oldGenSize (oldsize ysb ysa sb sa hsb hsa)
         promo (promoRate ysb ysa sb sa hsb hsa)
         ]
-    (println (str name " : " entry))
     (join SEP [ts name rt yob ysb yoa sb sa hob hsb hoa oldGenOcc oldGenSize promo ut kt rt])))
 
 (defn process-g1-event [name entry]
@@ -159,17 +155,8 @@
         oldGenSize (oldsize ysb ysa sb sa hsb hsa)
         promo (promoRate ysb ysa sb sa hsb hsa)
         ]
-    (println (str name " : " entry))
     (join SEP [ts name pt yob ysb yoa sb sa hob hsb hoa hsa oldGenOcc oldGenSize promo ut kt rt])))
  
-;(defn process-g1-mixed [name entry]
-;  (let [[a ts pt yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry
-;        oldGenOcc (oldOccup yob yoa sb sa hob hoa)
-;        oldGenSize (oldsize ysb ysa sb sa hsb hsa)
-;        promo (promoRate ysb ysa sb sa hsb hsa)
-;        ]
-;    (join SEP [ts name pt yob ysb yoa sb sa hob hsb hoa oldGenOcc oldGenSize promo ut kt rt])))
-
 (defn process-g1-conc-reg-start[entry]
     (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
     (join SEP [ts "g1conc-region-start"])))
@@ -202,8 +189,6 @@
 
 (defn process-g1-remark[entry]
     (let [[a ts ts2 pt2 pt1 ys ye ym hs he hm pt ut kt rt & e] entry]
-   ;(println (str "   hello!!!!!!!!!!!!!: "))
-     ; (println (str "   remark: " entry))
     (join SEP [ts "g1remark" pt1])))
 
 

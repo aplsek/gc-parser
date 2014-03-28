@@ -16,21 +16,22 @@
 ;    (is (= 0 (re-seq (minor-gc-pattern) line))))))
 
 (deftest test-g1-evac
-  ( let [line g1-evac
+  [line check]
+  ( let [
          match (re-seq (minor-gc-pattern-g1-evac) line)
          res (process-g1-evac (first match))]
   (testing "G1 -evac young "
-    (is (= g1-evac-ok res)))))
+    (is (= check res)))))
 
-(deftest test-g1-young
-  ( let [line g1-young
-         match (re-seq (minor-gc-pattern-g1-young) line)
+(deftest test-g1-event
+   [line check]
+  ( let [
+         match (re-seq (minor-gc-pattern-g1-event) line)
          res (process-g1-young (first match))
          ]
-  (testing "G1 - young"
-            (println (str "test g1 young: " res))
-    (is (= g1-young-ok res)))))
+  (testing "G1 - event"
+    (is (= check res)))))
 
-(test-g1-evac)
-
-;(test-g1-young)
+(test-g1-evac G1_YOUNG_TEST G1_YOUNG_TEST_OK)
+(test-g1-event G1_YOUNG_TEST G1_YOUNG_TEST_OK)
+(test-g1-event G1_MIXED_TEST G1_MIXED_TEST_OK)

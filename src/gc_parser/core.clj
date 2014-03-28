@@ -53,7 +53,7 @@
          g1-cleanup (re-seq (gc-pattern-g1-cleanup) line)
          ]
      (when-not (nil? g1-evac)
-               (println (str "match g1-evac :" g1-evac))
+               ;(println (str "match g1-evac :" g1-evac))
               ; (writeln (str "writeln test"))
                (writeln (process-g1-evac "g1evac" (map toMB (first g1-evac))))
               ;(println (str "match g1-evtest write"))
@@ -106,15 +106,15 @@
   )
 )
 
-(def not-nil? (comp not nil?))
+
 
 
 
 ;-----------------------------------------------------------------------
 ; Convert Java GC log csv format
 ;-----------------------------------------------------------------------
-(process-gc-file "input/gc3.log" "data.txt")
-;(process-gc-file "input/gc.log.stripped" "data.txt")
+;(process-gc-file "input/gc3.log" "data.txt")
+(process-gc-file "input/gc.log.stripped" "data.txt")
 
 ;(process-gc-file "gc.log" "data.csv")
 ;(process-gc-file "gc.log" "data.csv")
