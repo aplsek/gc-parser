@@ -3,6 +3,7 @@
                 [gc-parser.const :refer :all]
                 [gc-parser.matcher_g1 :refer :all]
                 [gc-parser.matcher_ParOld :refer :all]
+                [gc-parser.pre_formatter :refer :all]
                 ))
 
 (use '[clojure.string :only (join)])
