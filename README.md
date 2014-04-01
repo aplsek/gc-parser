@@ -8,6 +8,10 @@ gc-parser is written in Clojure.
 
 FIXME
 
+## Acknowledgment
+
+The original version of the parser for ParOlg GC based on "Clojure Script to Convert Java GC log to CSV Format" - http://jyliao.blogspot.com/2013/02/java-garbage-collection-log-analysis.html.
+
 ## License
 
 Copyright © 2014 FIXME
