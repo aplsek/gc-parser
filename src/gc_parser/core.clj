@@ -52,6 +52,8 @@
          g1-conc-mark-end (re-seq (gc-pattern-g1-conc-mark-end) line)
          g1-remark (re-seq (gc-pattern-g1-remark) line)
          g1-cleanup (re-seq (gc-pattern-g1-cleanup) line)
+         minor-gc (re-seq (minor-gc-pattern) line)
+				 full-gc (re-seq (full-gc-pattern) line)
          ]
      (when-not (nil? g1-evac)
                ;(println (str "match g1-evac :" g1-evac))
@@ -102,6 +104,12 @@
       (writeln (process-g1-cleanup (map toMB (first g1-cleanup))))
       
      )
+     (when-not (nil? full-gc) 
+        (println " match full gc")
+				(writeln (process-full-gc (first full-gc))))
+			(when-not (nil? minor-gc) 
+     (println " match minor gc")
+			(writeln (process-minor-gc (first minor-gc))))
       (println (str "end. :"))
       ;; TODO - process the line and report if there is no match!!
   )
@@ -115,7 +123,8 @@
 ; Convert Java GC log csv format
 ;-----------------------------------------------------------------------
 ;(process-gc-file "input/gc3.log" "data.txt")
-(process-gc-file "input/gc.log.stripped" "data.txt")
+;(process-gc-file "input/gc.log.stripped" "data.txt")
+(process-gc-file "input/gc.parOld.log" "data.txt")
 
 ;(process-gc-file "gc.log" "data.csv")
 ;(process-gc-file "gc.log" "data.csv")

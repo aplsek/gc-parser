@@ -33,4 +33,37 @@
 						pause-time 
 						exec-stat))))
 
-
+; Variable definitions (for both process-full-gc & process-minor-gc
+;     ts - timestamp (in seconds)
+;     ys - YoungGen space starting heap size (in KB)
+;     ye - YoungGen space ending heap size (in KB)
+;     ym - YoungGen space max heap size (in KB)
+;     os - OldGen space starting heap size (in KB)
+;     oe - OldGen space ending heap size (in KB)
+;     om - OldGen space max heap size (in KB)
+;     hs - Total heap space starting heap size (in KB)
+;     he - Total heap space ending heap size (in KB)
+;     hm - Total heap space max heap size (in KB)
+;     pt - GC Pause Time (in seconds)
+;     ps - PermGen space starting heap size (in KB)
+;     pe - PermGen space ending heap size (in KB)
+;     pm - PermGen space max heap size (in KB)
+;     ut - User Time (in seconds)
+;     kt - Kernel Time (in seconds)
+;     rt - Real Time (in seconds)
+(defn process-full-gc [entry]
+    (let [[a ts ys ye ym os oe om hs he hm ps pe pm pt ut kt rt & e] entry]
+	  (join \, [ts "full" pt 
+			           ys ye ym 
+				       hs he hm 
+					   ut kt rt 
+					   os oe om 
+					   ps pe pm])))
+	  
+(defn process-minor-gc [entry]
+    (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
+	  (println (str "process minor: " entry "  END."))
+      (join \, [ts "minor" pt 
+		        ys ye ym 
+				hs he hm 
+				ut kt rt])))
