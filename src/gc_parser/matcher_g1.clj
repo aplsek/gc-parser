@@ -12,11 +12,9 @@
          eden        (str " \\[" space-eden " ")
          survivor    (str space-surv " ")
          heap        (str space-heap "\\]")]
-     ;(println "[dbg] - minor-gc-pattern-g1-evac - aaa")
-     ;(println (str timestamp eden survivor heap exec-stat))
     (re-pattern (str timestamp eden survivor heap exec-stat))
     ))
-;  eden survivor heap exec-stat
+
 
 ; G1 young
 ; 755.441: [GC pause (young), 0.4418240 secs] [Eden: 9024.0M(9024.0M)->0.0B(8384.0M)
@@ -127,16 +125,22 @@
 
 
 ;433.905:
+;  ts - timestamp (in seconds)
+;  pt - GC Pause Time (in seconds)
+;
 ;  yob  youngGen occupation :8944.0M
 ;  ysb YoungGen size before: (8944.0M)
 ;  yoa  Young gen occupation after :->0.0B
 ;  ysa Yougn Gen size after: (8920.0M)
+;
 ;  sb Survivors occupation before: 272.0M->
 ;  sa Survivor occupation after:  296.0M
+;
 ;  hob  Heap occ before: 9418.3M
 ;  hsb heap size before (15.0G)
 ;  hoa heap occ after -> 498.3M(
 ;  hsa heap size after 15.0G)]
+;
 ;  ut  user time [Times: user=0.71
 ;  kt sys time  sys=0.03,
 ;  rt real time : real=0.11 secs]
@@ -146,6 +150,7 @@
         oldGenOcc (oldOccup yob yoa sb sa hob hoa)
         oldGenSize (oldsize ysb ysa sb sa hsb hsa)
         promo (promoRate ysb ysa sb sa hsb hsa)
+        permGen (str ",,,")
         ]
     (join SEP [ts name rt yob ysb yoa sb sa hob hsb hoa oldGenOcc oldGenSize promo ut kt rt])))
 

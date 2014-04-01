@@ -35,6 +35,7 @@
 
 ; Variable definitions (for both process-full-gc & process-minor-gc
 ;     ts - timestamp (in seconds)
+;     pt - GC Pause Time (in seconds)
 ;     ys - YoungGen space starting heap size (in KB)
 ;     ye - YoungGen space ending heap size (in KB)
 ;     ym - YoungGen space max heap size (in KB)
@@ -44,10 +45,11 @@
 ;     hs - Total heap space starting heap size (in KB)
 ;     he - Total heap space ending heap size (in KB)
 ;     hm - Total heap space max heap size (in KB)
-;     pt - GC Pause Time (in seconds)
+
 ;     ps - PermGen space starting heap size (in KB)
 ;     pe - PermGen space ending heap size (in KB)
 ;     pm - PermGen space max heap size (in KB)
+;
 ;     ut - User Time (in seconds)
 ;     kt - Kernel Time (in seconds)
 ;     rt - Real Time (in seconds)

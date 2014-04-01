@@ -124,7 +124,8 @@
 ;-----------------------------------------------------------------------
 ;(process-gc-file "input/gc3.log" "data.txt")
 ;(process-gc-file "input/gc.log.stripped" "data.txt")
-(process-gc-file "input/gc.parOld.log" "data.txt")
+;(process-gc-file "input/gc.parOld.log" "data.txt")
+(process-gc-file "input/gc.parOld-test.log" "data.txt")
 
 ;(process-gc-file "gc.log" "data.csv")
 ;(process-gc-file "gc.log" "data.csv")
