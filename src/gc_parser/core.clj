@@ -10,19 +10,7 @@
 
 
 
-(def headers_ParOld (join SEP  ["timestamp" "gc.type" "pause.time"
-         "young.start" "young.end" "young.max"
- "heap.start" "heap.end" "heap.max"
-     "time.user" "time.sys" "time.real"
- "old.start" "old.end" "old.max"
- "perm.start" "perm.end" "perm.max"]))
 
-(def headers_G1 (join SEP  ["timestamp" "gc.type" "pause.time"
-         "young.occ.start" "young.size.start" "young.occ.end" "young.size.end"
-             "survivor.start" "survivor.end"
- "heap.occ.start" "heap.size.start" "heap.occ.end" "heap.size.end"
- "old.occ.start" "old.occ.end" "old.size.start" "old.size.end" "promoRate"
-     "time.user" "time.sys" "time.real" ]))
 
 
 (defn process-gc-file [infile outfile]
@@ -34,6 +22,12 @@
           (resolve_line line writeln))))))
 
 
+(defn getGCPhaseName [line]
+  ;(str "G1-" (clojure.string/replace (clojure.string/join "-" line) SPACE "" )) 
+  (str "G1-" (clojure.string/join "-" line) SPACE "" )
+)
+
+
 ;;;;;
 ;
 ;
@@ -43,7 +37,6 @@
   [line writeln]
    (let [g1-evac  (re-seq (minor-gc-pattern-g1-evac) line)
          g1-young (re-seq (minor-gc-pattern-g1-young) line)
-         g1-mixed (re-seq (gc-pattern-g1-mixed) line)
          g1-conc-reg-st  (re-seq (gc-pattern-g1-conc-reg-start) line)
          g1-conc-reg-en  (re-seq (gc-pattern-g1-conc-reg-end) line)
          g1-conc-cl-start (re-seq (gc-pattern-g1-conc-cl-start) line)
@@ -54,41 +47,32 @@
          g1-cleanup (re-seq (gc-pattern-g1-cleanup) line)
          minor-gc (re-seq (minor-gc-pattern) line)
 				 full-gc (re-seq (full-gc-pattern) line)
+         g1full (re-seq (g1-full-pattern) line)
+         g1event  (re-seq (g1-event-pattern) line)
          ]
      (when-not (nil? g1-evac)
-               ;(println (str "match g1-evac :" g1-evac))
-              ; (writeln (str "writeln test"))
-               (writeln (process-g1-evac "g1evac" (map toMB (first g1-evac))))
-              ;(println (str "match g1-evtest write"))
-              ;(println (str "conc cl start:" g1-conc-cl-start ))              
+                (writeln (process-g1-evac (getGCPhaseName g1event) (map toMB (first g1-evac))))
      )
      (when-not (nil? g1-young)
-           ; (println ( str " match g1-young = " g1-young ))
-            (writeln (process-g1-event "g1young" (map toMB (first g1-young))))
+            ;(println ( str " match g1-young = " g1-young ))
+            (writeln (process-g1-event (getGCPhaseName g1event) (map toMB (first g1-young))))
      )
-     (when-not (nil? g1-mixed)
-            ;(println " match g1-mixed")
-             (writeln (process-g1-event "g1mixed" (map toMB (first g1-mixed))))
+     (when-not (nil? g1full)
+             (writeln (process-g1-full "g1full" (map toMB (first g1full))))
      )
       (when-not (nil? g1-conc-reg-st)
-           ; (println " match g1-conc-reg-st")
-             (writeln (process-g1-conc-reg-start (first g1-conc-reg-st)))
+            (writeln (process-g1-conc-reg-start (first g1-conc-reg-st)))
      )
      (when-not (nil? g1-conc-reg-en)
-     ; (println " match cocn reg en")
        (writeln (process-g1-conc-reg-end (first g1-conc-reg-en)))
      )
      (when-not (nil? g1-conc-cl-start)
-     ; (println " match conc cl start")
        (writeln (process-g1-conc-cl-start (first g1-conc-cl-start)))
      )
      (when-not (nil? g1-conc-cl-end)
-     ; (println " match conc cl end")
        (writeln (process-g1-conc-cl-end (first g1-conc-cl-end)))
-      ; (println (str "g1-conc-cl-end end. :"))
      )
       (when-not (nil? g1-conc-mark-start)
-      ;(println " match conc mark start")
        (writeln (process-g1-conc-mark-start (first g1-conc-mark-start)))
      )
      (when-not (nil? g1-conc-mark-end)
@@ -96,11 +80,9 @@
        (writeln (process-g1-conc-mark-end (first g1-conc-mark-end)))
      )
      (when-not (nil? g1-remark)
-      ;(println " match g1-remark")
       (writeln (process-g1-remark (first g1-remark)))
      )
       (when-not (nil? g1-cleanup)
-     ; (println " match g1-cleanup")
       (writeln (process-g1-cleanup (map toMB (first g1-cleanup))))
       
      )
@@ -108,9 +90,9 @@
         (println " match full gc")
 				(writeln (process-full-gc (first full-gc))))
 			(when-not (nil? minor-gc) 
-     (println " match minor gc")
-			(writeln (process-minor-gc (first minor-gc))))
-      (println (str "end. :"))
+        (println " match minor gc")
+        (writeln (process-minor-gc (first minor-gc))))
+      ;(println (str "ERR :" line))
       ;; TODO - process the line and report if there is no match!!
   )
 )
@@ -119,13 +101,24 @@
 
 
 
+;(process-gc-file-preformat "input/g1gc.log" "data.txt" )
+;(process-gc-file-preformat "input/gc.1021.jent1.G1.log" TMP_GC_FILE )
+;(process-gc-file TMP_GC_FILE "data.txt")
+
+(process-gc-file "input/gc.1021.jent1.G1.stripped.log" "data.txt")
+;(process-gc-file "input/gc3.log" "data.txt")
 ;-----------------------------------------------------------------------
 ; Convert Java GC log csv format
 ;-----------------------------------------------------------------------
 ;(process-gc-file "input/gc3.log" "data.txt")
 ;(process-gc-file "input/gc.log.stripped" "data.txt")
 ;(process-gc-file "input/gc.parOld.log" "data.txt")
-(process-gc-file "input/gc.parOld-test.log" "data.txt")
+;(process-gc-file "input/gc.parOld-test.log" "data.txt")
+
+
+;(bar "433.905: [GC pause (G1 Evacuation Pause) (young) [Eden:")
+;(bar "433.905: [GC pause (G1 Evacuation Pause) (mixed) [Eden:")
+;(bar "433.905: [GC pause (G1 Evacuation Pause) (young) (to-space exhausted) [Eden:")
 
 ;(process-gc-file "gc.log" "data.csv")
 ;(process-gc-file "gc.log" "data.csv")

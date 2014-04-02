@@ -45,7 +45,7 @@
 ;     hs - Total heap space starting heap size (in KB)
 ;     he - Total heap space ending heap size (in KB)
 ;     hm - Total heap space max heap size (in KB)
-
+;
 ;     ps - PermGen space starting heap size (in KB)
 ;     pe - PermGen space ending heap size (in KB)
 ;     pm - PermGen space max heap size (in KB)
@@ -54,18 +54,25 @@
 ;     kt - Kernel Time (in seconds)
 ;     rt - Real Time (in seconds)
 (defn process-full-gc [entry]
-    (let [[a ts ys ye ym os oe om hs he hm ps pe pm pt ut kt rt & e] entry]
+    (let [[a ts ys ye ym os oe om hs he hm ps pe pm pt ut kt rt & e] entry
+          promo (str "")]
 	  (join \, [ts "full" pt 
-			           ys ye ym 
-				       hs he hm 
-					   ut kt rt 
-					   os oe om 
+			           ys ye ym ""
+				      "" "" 
+              hs he hm ""
+					   os oe om "" 
+              ut kt rt 
+              promo
 					   ps pe pm])))
 	  
 (defn process-minor-gc [entry]
-    (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
+    (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry
+          promo (str "")]
 	  (println (str "process minor: " entry "  END."))
       (join \, [ts "minor" pt 
-		        ys ye ym 
+		        ys ye ym "" 
+          "" ""
 				hs he hm 
+        "" "" "" ""
+        promo
 				ut kt rt])))

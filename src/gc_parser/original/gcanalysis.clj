@@ -88,7 +88,8 @@
 			  (when-not (nil? full-gc) 
 				(writeln (process-full-gc (first full-gc))))
 			  (when-not (nil? minor-gc) 
-				(writeln (process-minor-gc (first minor-gc))))))))))
+				(writeln (process-minor-gc (first minor-gc))))
+     ))))))
 
 
 (defn testt

@@ -16,20 +16,57 @@
     ))
 
 
+;; TODO: cleanup
+(def ^:constant xxx (str "("
+                                        g1-evacuation-event  "|"  
+                                        g1-young-event "|" 
+                                        g1-initial-mark-event "|" 
+                                        g1-mixed-event  "|" 
+                                        g1-tospace-exhast-event "|"
+                                       ")"
+                                       ))
+
+
+(def ^:constant g1_event_names_pattern (str g1-young-event "|" g1-mixed-event "|" g1-tospace-exhast-event "|" g1-initial-mark-event "|" g1-evacuation-event))
+
+(defn g1-event-pattern []
+   (let [gcevent g1_event_names_pattern]
+    (re-pattern (str gcevent))))
+
+
 ; G1 young
 ; 755.441: [GC pause (young), 0.4418240 secs] [Eden: 9024.0M(9024.0M)->0.0B(8384.0M)
 ;   Survivors: 800.0M->1248.0M Heap:
 ;   13.2G(16.0G)->5072.0M(16.0G)] [Times: user=5.41 sys=0.01, real=0.44
 ;   secs]
 ;
+;
 (defn minor-gc-pattern-g1-young []
-   (let [timestamp  "([\\d\\.]+): \\[GC pause \\(young\\), "
+   (let [timestamp  "([\\d\\.]+): \\[GC pause "
+        gcevent     (str "(\\(young\\)|\\(to-space\\ exhausted\\)|\\(mixed\\)| )+"  ", ")
+       ; gcevent     (str g1_event_pattern ", ")
         eden        (str " \\[" space-eden)
         survivor    (str " " space-surv " ")
         heap        (str space-heap "\\]")]
-     ;(println (str timestamp pause-time eden survivor heap exec-stat))
-    (re-pattern (str timestamp pause-time eden survivor heap exec-stat))))
-;timestamp pause-time eden survivor heap exec-stat
+     ;(println (str timestamp gcevent pause-time eden survivor heap exec-stat))
+    (re-pattern (str timestamp gcevent pause-time eden survivor heap exec-stat))))
+
+
+;
+; 2273.426: [Full GC 28G->2265M(28G), 10.5452700 secs]
+;   [Eden: 0.0B(24.0G)->0.0B(24.0G) Survivors: 0.0B->0.0B Heap: 28.0G(28.0G)->2265.4M(28.0G)]
+; [Times: user=13.17 sys=0.23, real=10.54 secs]
+;
+;
+(defn g1-full-pattern []
+   (let [timestamp     (str  timestamp-pattern "\\[Full GC ")
+         total_space (str space)
+         eden        (str " \\[" space-eden)
+         survivor    (str " " space-surv " ")
+         heap        (str space-heap "\\]")
+         ]
+    (re-pattern (str timestamp space pause-time eden survivor heap exec-stat))))
+
 
 (defn gc-pattern-g1-cleanup []
    (let [timestamp      "([\\d\\.]+): \\[GC cleanup "
@@ -39,18 +76,6 @@
 
 
 
-; G1 mixed
-; 1165.366: [GC pause (mixed), 0.0793930 secs] [Eden: 672.0M(672.0M)->0.0B(672.0M) Survivors: 128.0M->128.0M Heap:
-; 7421.9M(16.0G)->5212.4M(16.0G)] [Times: user=0.90 sys=0.00, real=0.08 secs]
-;
-;
-(defn gc-pattern-g1-mixed []
-   (let [timestamp  "([\\d\\.]+): \\[GC pause \\(mixed\\), "
-        eden        (str " \\[" space-eden)
-        survivor    (str " " space-surv " ")
-        heap        (str space-heap "\\]")]
-    ; (println (str timestamp pause-time eden survivor heap exec-stat))
-    (re-pattern (str timestamp pause-time eden survivor heap exec-stat))))
 
 ; 1161.747: [GC concurrent-root-region-scan-start]
 (defn gc-pattern-g1-conc-reg-start []
@@ -63,6 +88,8 @@
 (defn gc-pattern-g1-conc-reg-end []
    (let [timestamp  "([\\d\\.]+): \\[GC concurrent-root-region-scan-end, "]
     (re-pattern (str timestamp pause-time))))
+
+
 
 
 
@@ -103,6 +130,9 @@
    (let [timestamp  "([\\d\\.]+): \\[GC concurrent-mark-end, "]
     (re-pattern (str timestamp pause-time))))
 
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn promoRate [yob yoa sb sa hob hoa]
    (-  ( - hoa (+ yoa sa)) (- hob (+ yob sb)))
@@ -152,15 +182,41 @@
         promo (promoRate ysb ysa sb sa hsb hsa)
         permGen (str ",,,")
         ]
-    (join SEP [ts name rt yob ysb yoa sb sa hob hsb hoa oldGenOcc oldGenSize promo ut kt rt])))
+    (join SEP [ts name rt 
+               yob ysb yoa ysa 
+               sb sa 
+               hob hsb hoa hsa
+               oldGenOcc oldGenSize 
+               promo 
+               ut kt rt])))
 
 (defn process-g1-event [name entry]
-  (let [[a ts pt yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry
+  (let [[a ts phase pt yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry
         oldGenOcc (oldOccup yob yoa sb sa hob hoa)
         oldGenSize (oldsize ysb ysa sb sa hsb hsa)
         promo (promoRate ysb ysa sb sa hsb hsa)
         ]
-    (join SEP [ts name pt yob ysb yoa sb sa hob hsb hoa hsa oldGenOcc oldGenSize promo ut kt rt])))
+    (join SEP [ts name pt 
+               yob ysb yoa ysa
+               sb sa
+               hob hsb hoa hsa
+               oldGenOcc oldGenSize
+               promo
+               ut kt rt])))
+
+(defn process-g1-full [name entry]
+  (let [[a ts pt heap_before heap_after heap_size  yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry
+        oldGenOcc (oldOccup yob yoa sb sa hob hoa)
+        oldGenSize (oldsize ysb ysa sb sa hsb hsa)
+        promo (promoRate ysb ysa sb sa hsb hsa)
+        ]
+    (join SEP [ts name pt 
+               yob ysb yoa ysa
+               sb sa
+               hob hsb hoa hsa
+               oldGenOcc oldGenSize
+               promo
+               ut kt rt])))
  
 (defn process-g1-conc-reg-start[entry]
     (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
