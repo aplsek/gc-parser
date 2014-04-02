@@ -3,9 +3,9 @@
                 [gc-parser.const :refer :all]
                 ))
 
-(use '[clojure.string :only (join)])
+;(use '[clojure.string :only (join)])
 
-;(use '[clojure.string])
+(use '[clojure.string])
 
 
 (defn minor-gc-pattern-g1-line []

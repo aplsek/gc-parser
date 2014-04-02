@@ -24,7 +24,6 @@
 
 (defn getGCPhaseName [line]
   (str "g1-" (clojure.string/replace (clojure.string/join UNDERSCORE line) SPACE "" )) 
-  ;(str "G1-" (clojure.string/join "-" line) SPACE "" )
 )
 
 
@@ -54,11 +53,9 @@
                 (writeln (process-g1-evac (getGCPhaseName g1event) (map toMB (first g1-evac))))
      )
      (when-not (nil? g1-young)
-            (println ( str " match g1-young = " g1-young ))
             (writeln (process-g1-event (getGCPhaseName g1event) (map toMB (first g1-young))))
      )
      (when-not (nil? g1full)
-            (println ( str " match g1-full = " g1full ))
        (writeln (process-g1-full "g1full" (map toMB (first g1full))))
      )
       (when-not (nil? g1-conc-reg-st)
@@ -77,23 +74,18 @@
        (writeln (process-g1-conc-mark-start (first g1-conc-mark-start)))
      )
      (when-not (nil? g1-conc-mark-end)
-      (println " match g1 conc mark end")
        (writeln (process-g1-conc-mark-end (first g1-conc-mark-end)))
      )
      (when-not (nil? g1-remark)
-      (writeln (process-g1-remark (first g1-remark)))
+       (writeln (process-g1-remark (first g1-remark)))
      )
-      (when-not (nil? g1-cleanup)
-      (writeln (process-g1-cleanup (map toMB (first g1-cleanup))))
-      
-     )
+     (when-not (nil? g1-cleanup)
+       (writeln (process-g1-cleanup (map toMB (first g1-cleanup)))))
      (when-not (nil? full-gc) 
-        (println " match full gc")
 				(writeln (process-full-gc (first full-gc))))
-			(when-not (nil? minor-gc) 
-        (println " match minor gc")
+		 (when-not (nil? minor-gc) 
         (writeln (process-minor-gc (first minor-gc))))
-      ;(println (str "ERR :" line))
+     ;(println (str "ERR :" line))
       ;; TODO - process the line and report if there is no match!!
   )
 )
@@ -103,10 +95,10 @@
 
 
 ;(process-gc-file-preformat "input/g1gc.log" "data.txt" )
-;(process-gc-file-preformat "input/gc.1021.jent1.G1.log" TMP_GC_FILE )
-;(process-gc-file TMP_GC_FILE "data.txt")
+(process-gc-file-preformat "input/gc.G1.log" TMP_GC_FILE )
+(process-gc-file TMP_GC_FILE "data.txt")
 
-(process-gc-file "input/gc.1021.jent1.G1.stripped.log" "data.txt")
+;(process-gc-file "input/gc.log.stripped" "data.txt")
 ;(process-gc-file "input/gc33.log" "data.txt")
 ;-----------------------------------------------------------------------
 ; Convert Java GC log csv format
