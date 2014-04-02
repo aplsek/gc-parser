@@ -25,7 +25,7 @@
     ))
 
 (defn pattern-par-old-gc []
-   (let [gcline  "\\[PSYoungGen:|\\[Full GC"
+   (let [gcline  "\\[PSYoungGen:"
          ]
      ;(println "[dbg] - minor-gc-pattern-g1-evac - aaa")
      ;(println (str timestamp eden survivor heap exec-stat))

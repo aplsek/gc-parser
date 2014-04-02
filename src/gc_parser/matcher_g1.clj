@@ -40,15 +40,14 @@
 ;   13.2G(16.0G)->5072.0M(16.0G)] [Times: user=5.41 sys=0.01, real=0.44
 ;   secs]
 ;
-;
+; TODO:
 (defn minor-gc-pattern-g1-young []
    (let [timestamp  "([\\d\\.]+): \\[GC pause "
-        gcevent     (str "(\\(young\\)|\\(to-space\\ exhausted\\)|\\(mixed\\)| )+"  ", ")
+        gcevent     (str "(\\(young\\)|\\(to-space\\ exhausted\\)|\\(mixed\\)||\\(initial-mark\\)| )+"  ", ")
        ; gcevent     (str g1_event_pattern ", ")
         eden        (str " \\[" space-eden)
         survivor    (str " " space-surv " ")
         heap        (str space-heap "\\]")]
-     ;(println (str timestamp gcevent pause-time eden survivor heap exec-stat))
     (re-pattern (str timestamp gcevent pause-time eden survivor heap exec-stat))))
 
 
@@ -59,19 +58,18 @@
 ;
 ;
 (defn g1-full-pattern []
-   (let [timestamp     (str  timestamp-pattern "\\[Full GC ")
-         total_space (str space)
+   (let [timestamp     (str  timestamp-pattern " \\[Full GC ")
+         total_space (str space ", ")
          eden        (str " \\[" space-eden)
          survivor    (str " " space-surv " ")
          heap        (str space-heap "\\]")
          ]
-    (re-pattern (str timestamp space pause-time eden survivor heap exec-stat))))
+     (re-pattern (str timestamp total_space pause-time eden survivor heap exec-stat))))
 
 
 (defn gc-pattern-g1-cleanup []
    (let [timestamp      "([\\d\\.]+): \\[GC cleanup "
         space-cleanup   (str space-g1-cleanup ", ")]
-    ; (println (str timestamp pause-time exec-stat))
     (re-pattern (str timestamp space-cleanup pause-time exec-stat))))
 
 

@@ -5,6 +5,7 @@
 
 ;(def ^:constant SEP " ")
 (def ^:constant SEP ",")
+(def ^:constant UNDERSCORE "_")
 ;(def ^:constant SEP " | ")
 
 ;;; CONSTANTS : Basic Patterns
@@ -154,6 +155,7 @@
 
 
 (def ^:constant G1_FULL_TEST "2273.426: [Full GC 28G->2265M(28G), 10.5452700 secs] [Eden: 0.0B(24.0G)->0.0B(24.0G) Survivors: 0.0B->0.0B Heap: 28.0G(28.0G)->2265.4M(28.0G)] [Times: user=13.17 sys=0.23, real=10.54 secs]")
+(def ^:constant G1_FULL_TEST_OK "273.426,g1full,28000,0,24000,0,24000,0,0,28000,28000,2265,28000,28000,2265,4000,4000,0,13.17,0.23,10.54")
 
  
 

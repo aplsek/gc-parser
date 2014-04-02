@@ -23,8 +23,8 @@
 
 
 (defn getGCPhaseName [line]
-  ;(str "G1-" (clojure.string/replace (clojure.string/join "-" line) SPACE "" )) 
-  (str "G1-" (clojure.string/join "-" line) SPACE "" )
+  (str "g1-" (clojure.string/replace (clojure.string/join UNDERSCORE line) SPACE "" )) 
+  ;(str "G1-" (clojure.string/join "-" line) SPACE "" )
 )
 
 
@@ -54,11 +54,12 @@
                 (writeln (process-g1-evac (getGCPhaseName g1event) (map toMB (first g1-evac))))
      )
      (when-not (nil? g1-young)
-            ;(println ( str " match g1-young = " g1-young ))
+            (println ( str " match g1-young = " g1-young ))
             (writeln (process-g1-event (getGCPhaseName g1event) (map toMB (first g1-young))))
      )
      (when-not (nil? g1full)
-             (writeln (process-g1-full "g1full" (map toMB (first g1full))))
+            (println ( str " match g1-full = " g1full ))
+       (writeln (process-g1-full "g1full" (map toMB (first g1full))))
      )
       (when-not (nil? g1-conc-reg-st)
             (writeln (process-g1-conc-reg-start (first g1-conc-reg-st)))
@@ -106,7 +107,7 @@
 ;(process-gc-file TMP_GC_FILE "data.txt")
 
 (process-gc-file "input/gc.1021.jent1.G1.stripped.log" "data.txt")
-;(process-gc-file "input/gc3.log" "data.txt")
+;(process-gc-file "input/gc33.log" "data.txt")
 ;-----------------------------------------------------------------------
 ; Convert Java GC log csv format
 ;-----------------------------------------------------------------------
