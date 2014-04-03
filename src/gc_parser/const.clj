@@ -126,8 +126,7 @@
 (def ^:constant g1-young-s "755.441: [GC pause (young), 0.4418240 secs] [Eden: 9024.0M(9024.0M)->0.0B(8384.0M) Survivors: 800.0M->1248.0M Heap: 13.2G(16.0G)->5072.0M(16.0G)] [Times: user=5.41 sys=0.01, real=0.44 secs]")
 
 (def ^:constant G1_MIXED_TEST "1165.366: [GC pause (mixed), 0.0793930 secs] [Eden: 672.0M(672.0M)->0.0B(672.0M) Survivors: 128.0M->128.0M Heap: 7421.9M(16.0G)->5212.4M(16.0G)] [Times: user=0.90 sys=0.00, real=0.08 secs]")
-
-(def ^:constant G1_MIXED_TEST_OK "1165.366,g1mixed,128.0,0.0793930,672.0,672.0,0.0,672.0,128.0,7421.9,16.0,5212.4")
+(def ^:constant G1_MIXED_TEST_OK "1165.366,g1-mixed,0.0793930,672,672,0,672,128,128,7421,16000,5212,16000,6621,5084,15200,15200,0,0.90,0.00,0.08")
 
 (def ^:constant G1_CONCURRENT_REG_START_TEST "1161.747: [GC concurrent-root-region-scan-start]")
 (def ^:constant G1_CONCURRENT_REG_START_OK "1161.747,g1conc-start")
@@ -155,9 +154,15 @@
 
 
 (def ^:constant G1_FULL_TEST "2273.426: [Full GC 28G->2265M(28G), 10.5452700 secs] [Eden: 0.0B(24.0G)->0.0B(24.0G) Survivors: 0.0B->0.0B Heap: 28.0G(28.0G)->2265.4M(28.0G)] [Times: user=13.17 sys=0.23, real=10.54 secs]")
-(def ^:constant G1_FULL_TEST_OK "273.426,g1full,28000,0,24000,0,24000,0,0,28000,28000,2265,28000,28000,2265,4000,4000,0,13.17,0.23,10.54")
+(def ^:constant G1_FULL_TEST_OK "5443.189,g1full,10.6269200,0,24000,0,24000,0,0,28000,28000,2784,28000,28000,2784,4000,4000,0,14.41,0.03,10.62")
 
  
+(def ^:constant G1_EX_TEST "442.041: [GC pause (young) (initial-mark) (to-space exhausted), 0.9959340 secs] [Eden: 264.0M(23.8G)->0.0B(24.0G) Survivors: 216.0M->0.0B Heap: 28.0G(28.0G)->28.0G(28.0G)] [Times: user=3.14 sys=0.38, real=1.00 secs]")
+(def ^:constant G1_EX_TEST_OK "5442.041,g1-young_initial-mark_to-spaceexhausted,0.9959340,264,23800,0,24000,216,0,28000,28000,28000,28000,27520,28000,4784,4000,-784,3.14,0.38,1.00")
+
+ 
+(def ^:constant G1_EX_TEST "5435.836: [GC pause (young) (to-space exhausted), 5.9891550 secs] [Eden: 23.4G(23.4G)->0.0B(23.8G) Survivors: 656.0M->216.0M Heap: 27.8G(28.0G)->27.7G(28.0G)] [Times: user=38.89 sys=1.79, real=5.98 secs]")
+(def ^:constant G1_EX_TEST_OK "5435.836,g1-young_to-spaceexhausted,5.9891550,23400,23400,0,23800,656,216,27800,28000,27700,28000,3344,26784,4344,4784,440,38.89,1.79,5.98")
 
 
 
@@ -166,8 +171,20 @@
 
 ;;;;;;;;;;;;;;;;;;;;; Helper methods
 
+(defn strip [coll chars]
+  (apply str (remove #((set chars) %) coll)))
+
+(defn stripMDB [coll]
+  (apply str (remove #((set "MGKB") %) coll)))
+
+;(defn str [s]
+;   (read-string (stripMDB s)))
+
 (defn parse-int [s]
-   (Integer. (re-find  #"\d+" s )))
+   ;(Integer. (read-string (stripMDB s))))
+ (read-string (stripMDB s)))
+
+
 
 (defn toMB
   [x]
@@ -179,3 +196,4 @@
     :else x
    )
   )
+

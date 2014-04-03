@@ -202,8 +202,14 @@
                promo
                ut kt rt])))
 
+
+;
+;
+; ts        name    pt       yob ysb yoa ysa  sb sa  hob   hsb  hoa  hsa   ogo-b    ogo-a,   oldGenSize promo     ut kt rt
+; 5443.189,g1full,10.6269200,0,24000,0,24000,0,0   ,28000,28000,2784,28000,28000   ,2784,            4000,4000,    0,14.41,0.03,10.62
+;
 (defn process-g1-full [name entry]
-  (let [[a ts pt heap_before heap_after heap_size  yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry
+  (let [[a ts heap_before heap_after heap_size pt yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry
         oldGenOcc (oldOccup yob yoa sb sa hob hoa)
         oldGenSize (oldsize ysb ysa sb sa hsb hsa)
         promo (promoRate ysb ysa sb sa hsb hsa)

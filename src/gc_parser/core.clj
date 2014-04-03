@@ -93,13 +93,24 @@
 
 
 
+;(str "28.721")
+
+;(toMB "28.721G")
+
+
+;(process-gc-file "input/gc3.log" "data.txt")
 
 ;(process-gc-file-preformat "input/g1gc.log" "data.txt" )
+;(process-gc-file-preformat "input/gc.G1.log" TMP_GC_FILE )
+;(process-gc-file TMP_GC_FILE "data.txt")
+
+;(process-gc-file "input/gc.log.stripped" "data.txt")
+
+
 (process-gc-file-preformat "input/gc.G1.log" TMP_GC_FILE )
 (process-gc-file TMP_GC_FILE "data.txt")
 
-;(process-gc-file "input/gc.log.stripped" "data.txt")
-;(process-gc-file "input/gc33.log" "data.txt")
+
 ;-----------------------------------------------------------------------
 ; Convert Java GC log csv format
 ;-----------------------------------------------------------------------
