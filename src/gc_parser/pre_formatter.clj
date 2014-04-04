@@ -68,4 +68,4 @@
           (filter_line line write))))))
 
 
-(process-gc-file-preformat "input/gc.1021.jent1.G1.log" TMP_GC_FILE )
+;(process-gc-file-preformat "input/gc.1021.jent1.G1.log" TMP_GC_FILE )
