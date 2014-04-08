@@ -56,20 +56,20 @@
 (defn process-full-gc [entry]
     (let [[a ts ys ye ym os oe om hs he hm ps pe pm pt ut kt rt & e] entry
           promo (str "")]
-	  (join \, [ts "full" pt 
+      (join \, [ts "ParOld-full" pt 
 			           ys ye ym ""
 				      "" "" 
               hs he hm ""
 					   os oe om "" 
-              ut kt rt 
               promo
+              ut kt rt 
 					   ps pe pm])))
 	  
 (defn process-minor-gc [entry]
     (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry
           promo (str "")]
-	  (println (str "process minor: " entry "  END."))
-      (join \, [ts "minor" pt 
+	  ;(println (str "process minor: " entry "  END."))
+      (join \, [ts "ParOld-minor" pt 
 		        ys ye ym "" 
           "" ""
 				hs he hm 

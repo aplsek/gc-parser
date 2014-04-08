@@ -1,264 +1,110 @@
-(ns gc-parser.matcher_g1
+(ns gc-parser.core
     (:require
                 [gc-parser.const :refer :all]
+                [gc-parser.matcher_g1 :refer :all]
+                [gc-parser.matcher_ParOld :refer :all]
+                [gc-parser.pre_formatter :refer :all]
                 ))
 
 (use '[clojure.string :only (join)])
 
 
 
-(defn minor-gc-pattern-g1-evac []
-   (let [timestamp  "([\\d\\.]+): \\[GC pause \\(G1 Evacuation Pause\\) \\(young\\)"
-         eden        (str " \\[" space-eden " ")
-         survivor    (str space-surv " ")
-         heap        (str space-heap "\\]")]
-    (re-pattern (str timestamp eden survivor heap exec-stat))
-    ))
 
 
-;; TODO: cleanup
-(def ^:constant xxx (str "("
-                                        g1-evacuation-event  "|"  
-                                        g1-young-event "|" 
-                                        g1-initial-mark-event "|" 
-                                        g1-mixed-event  "|" 
-                                        g1-tospace-exhast-event "|"
-                                       ")"
-                                       ))
+
+(defn getGCPhaseName [line]
+  (str "g1-" (clojure.string/replace (clojure.string/join UNDERSCORE line) SPACE "" )) 
+)
 
 
-(def ^:constant g1_event_names_pattern (str g1-young-event "|" g1-mixed-event "|" g1-tospace-exhast-event "|" g1-initial-mark-event "|" g1-evacuation-event))
-
-(defn g1-event-pattern []
-   (let [gcevent g1_event_names_pattern]
-    (re-pattern (str gcevent))))
-
-
-; G1 young
-; 755.441: [GC pause (young), 0.4418240 secs] [Eden: 9024.0M(9024.0M)->0.0B(8384.0M)
-;   Survivors: 800.0M->1248.0M Heap:
-;   13.2G(16.0G)->5072.0M(16.0G)] [Times: user=5.41 sys=0.01, real=0.44
-;   secs]
-;
-; TODO:
-(defn minor-gc-pattern-g1-young []
-   (let [timestamp  "([\\d\\.]+): \\[GC pause "
-        gcevent     (str "(\\(young\\)|\\(to-space\\ exhausted\\)|\\(mixed\\)||\\(initial-mark\\)| )+"  ", ")
-       ; gcevent     (str g1_event_pattern ", ")
-        eden        (str " \\[" space-eden)
-        survivor    (str " " space-surv " ")
-        heap        (str space-heap "\\]")]
-    (re-pattern (str timestamp gcevent pause-time eden survivor heap exec-stat))))
-
-
-;
-; 2273.426: [Full GC 28G->2265M(28G), 10.5452700 secs]
-;   [Eden: 0.0B(24.0G)->0.0B(24.0G) Survivors: 0.0B->0.0B Heap: 28.0G(28.0G)->2265.4M(28.0G)]
-; [Times: user=13.17 sys=0.23, real=10.54 secs]
+;;;;;
 ;
 ;
-(defn g1-full-pattern []
-   (let [timestamp     (str  timestamp-pattern " \\[Full GC ")
-         total_space (str space ", ")
-         eden        (str " \\[" space-eden)
-         survivor    (str " " space-surv " ")
-         heap        (str space-heap "\\]")
+; TODO: add ParOld processing
+;
+(defn resolve_line
+  [line writeln]
+   (let [g1-evac  (re-seq (minor-gc-pattern-g1-evac) line)
+         g1-young (re-seq (minor-gc-pattern-g1-young) line)
+         g1-conc-reg-st  (re-seq (gc-pattern-g1-conc-reg-start) line)
+         g1-conc-reg-en  (re-seq (gc-pattern-g1-conc-reg-end) line)
+         g1-conc-cl-start (re-seq (gc-pattern-g1-conc-cl-start) line)
+         g1-conc-cl-end (re-seq (gc-pattern-g1-conc-cl-end) line)
+         g1-conc-mark-start (re-seq (gc-pattern-g1-conc-mark-start) line)
+         g1-conc-mark-end (re-seq (gc-pattern-g1-conc-mark-end) line)
+         g1-remark (re-seq (gc-pattern-g1-remark) line)
+         g1-cleanup (re-seq (gc-pattern-g1-cleanup) line)
+         minor-gc (re-seq (minor-gc-pattern) line)
+				 full-gc (re-seq (full-gc-pattern) line)
+         g1full (re-seq (g1-full-pattern) line)
+         g1event  (re-seq (g1-event-pattern) line)
          ]
-     (re-pattern (str timestamp total_space pause-time eden survivor heap exec-stat))))
-
-
-(defn gc-pattern-g1-cleanup []
-   (let [timestamp      "([\\d\\.]+): \\[GC cleanup "
-        space-cleanup   (str space-g1-cleanup ", ")]
-    (re-pattern (str timestamp space-cleanup pause-time exec-stat))))
-
-
-
-
-; 1161.747: [GC concurrent-root-region-scan-start]
-(defn gc-pattern-g1-conc-reg-start []
-   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-root-region-scan-start\\]"]
-    (re-pattern (str timestamp))))
-
-
-; 1162.042: [GC concurrent-root-region-scan-end, 0.2950840 secs]
-;
-(defn gc-pattern-g1-conc-reg-end []
-   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-root-region-scan-end, "]
-    (re-pattern (str timestamp pause-time))))
-
-
-
-
-
-; 1162.952: [GC concurrent-cleanup-start]
-;
-(defn gc-pattern-g1-conc-cl-start []
-   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-cleanup-start\\]"]
-    (re-pattern (str timestamp))))
-
-; 1162.952: [GC concurrent-cleanup-end, 0.0001380 secs]
-;
-(defn gc-pattern-g1-conc-cl-end []
-   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-cleanup-end, "]
-    ; (println (str timestamp pause-time))
-    (re-pattern (str timestamp pause-time))))
-
-
-; 1162.844: [GC remark 1162.846: [GC ref-proc, 0.0147680 secs], 0.0899440 secs]
-;
-;
-(defn gc-pattern-g1-remark []
-   (let [timestamp  "([\\d\\.]+): \\[GC remark "
-         timestamp2 "([\\d\\.]+): \\[GC ref-proc, "
-         double_pause-time (str pause-time ", " pause-time)]
-     (re-pattern (str timestamp timestamp2 double_pause-time exec-stat))))
-
-
-; 1162.042: [GC concurrent-mark-start]
-;
-(defn gc-pattern-g1-conc-mark-start []
-   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-mark-start\\]"]
-    (re-pattern (str timestamp))))
-
-
-; 1162.842: [GC concurrent-mark-end, 0.8000300 secs]
-;
-(defn gc-pattern-g1-conc-mark-end []
-   (let [timestamp  "([\\d\\.]+): \\[GC concurrent-mark-end, "]
-    (re-pattern (str timestamp pause-time))))
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defn promoRate [yob yoa sb sa hob hoa]
-   (-  ( - hoa (+ yoa sa)) (- hob (+ yob sb)))
+     (when-not (nil? g1-evac)
+                (writeln (process-g1-evac (getGCPhaseName g1event) (map toMB (first g1-evac))))
+     )
+     (when-not (nil? g1-young)
+            (writeln (process-g1-event (getGCPhaseName g1event) (map toMB (first g1-young))))
+     )
+     (when-not (nil? g1full)
+       (writeln (process-g1-full "g1full" (map toMB (first g1full))))
+     )
+      (when-not (nil? g1-conc-reg-st)
+            (writeln (process-g1-conc-reg-start (first g1-conc-reg-st)))
+     )
+     (when-not (nil? g1-conc-reg-en)
+       (writeln (process-g1-conc-reg-end (first g1-conc-reg-en)))
+     )
+     (when-not (nil? g1-conc-cl-start)
+       (writeln (process-g1-conc-cl-start (first g1-conc-cl-start)))
+     )
+     (when-not (nil? g1-conc-cl-end)
+       (writeln (process-g1-conc-cl-end (first g1-conc-cl-end)))
+     )
+      (when-not (nil? g1-conc-mark-start)
+       (writeln (process-g1-conc-mark-start (first g1-conc-mark-start)))
+     )
+     (when-not (nil? g1-conc-mark-end)
+       (writeln (process-g1-conc-mark-end (first g1-conc-mark-end)))
+     )
+     (when-not (nil? g1-remark)
+       (writeln (process-g1-remark (first g1-remark)))
+     )
+     (when-not (nil? g1-cleanup)
+       (writeln (map toMB (first g1-cleanup))))
+     (when-not (nil? full-gc) 
+       (println (map toMB (first full-gc)))
+				(writeln (process-full-gc (map toMB (first full-gc)))))
+		 (when-not (nil? minor-gc) 
+        (writeln (process-minor-gc (map toMB (first minor-gc)))))
+     ;(println (str "ERR :" line))
+      ;; TODO - process the line and report if there is no match!!
+      ;;
   )
-
-(defn allocRate [yob yoa sb sa hob hoa]
-  ;; TODO:?? need the previous GC event to compute
-)
-
-(defn oldOccup [yob yoa sb sa hob hoa]
-  ;(println (str "oldOccup run:" yob ))    
-  (let []
-    (join SEP [(- hob (+ yob sb)) ( - hoa (+ yoa sa)) ]))
-)
-
-(defn oldsize [ysb ysa sb sa hsb hsa]
-      (join SEP [( - hsb (+ ysb sb)) ( - hsa (+ ysa sa))
-                                  ])
 )
 
 
-;433.905:
-;  ts - timestamp (in seconds)
-;  pt - GC Pause Time (in seconds)
-;
-;  yob  youngGen occupation :8944.0M
-;  ysb YoungGen size before: (8944.0M)
-;  yoa  Young gen occupation after :->0.0B
-;  ysa Yougn Gen size after: (8920.0M)
-;
-;  sb Survivors occupation before: 272.0M->
-;  sa Survivor occupation after:  296.0M
-;
-;  hob  Heap occ before: 9418.3M
-;  hsb heap size before (15.0G)
-;  hoa heap occ after -> 498.3M(
-;  hsa heap size after 15.0G)]
-;
-;  ut  user time [Times: user=0.71
-;  kt sys time  sys=0.03,
-;  rt real time : real=0.11 secs]
-; PauseTime = G1 Evac does not report pause time separately, only in Times
-(defn process-g1-evac [name entry]
-  (let [[a ts yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry
-        oldGenOcc (oldOccup yob yoa sb sa hob hoa)
-        oldGenSize (oldsize ysb ysa sb sa hsb hsa)
-        promo (promoRate ysb ysa sb sa hsb hsa)
-        permGen (str ",,,")
-        ]
-    (join SEP [ts name rt 
-               yob ysb yoa ysa 
-               sb sa 
-               hob hsb hoa hsa
-               oldGenOcc oldGenSize 
-               promo 
-               ut kt rt])))
-
-(defn process-g1-event [name entry]
-  (let [[a ts phase pt yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry
-        oldGenOcc (oldOccup yob yoa sb sa hob hoa)
-        oldGenSize (oldsize ysb ysa sb sa hsb hsa)
-        promo (promoRate ysb ysa sb sa hsb hsa)
-        ]
-    (join SEP [ts name pt 
-               yob ysb yoa ysa
-               sb sa
-               hob hsb hoa hsa
-               oldGenOcc oldGenSize
-               promo
-               ut kt rt])))
 
 
-;
-;
-; ts        name    pt       yob ysb yoa ysa  sb sa  hob   hsb  hoa  hsa   ogo-b    ogo-a,   oldGenSize promo     ut kt rt
-; 5443.189,g1full,10.6269200,0,24000,0,24000,0,0   ,28000,28000,2784,28000,28000   ,2784,            4000,4000,    0,14.41,0.03,10.62
-;
-(defn process-g1-full [name entry]
-  (let [[a ts heap_before heap_after heap_size pt yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry
-        oldGenOcc (oldOccup yob yoa sb sa hob hoa)
-        oldGenSize (oldsize ysb ysa sb sa hsb hsa)
-        promo (promoRate ysb ysa sb sa hsb hsa)
-        ]
-    (join SEP [ts name pt 
-               yob ysb yoa ysa
-               sb sa
-               hob hsb hoa hsa
-               oldGenOcc oldGenSize
-               promo
-               ut kt rt])))
- 
-(defn process-g1-conc-reg-start[entry]
-    (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
-    (join SEP [ts "g1conc-region-start"])))
-
-(defn process-g1-conc-reg-end[entry]
-    (let [[a ts pt yob ysb yoa ysa sb sa hob hsb hoa hsa ut kt rt & e] entry]
-    (join SEP [ts "g1conc-region-end" pt])))
-
-
-(defn process-g1-conc-cl-start[entry]
-    (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
-    (join SEP [ts "g1conc-cl-start"])))
-
-(defn process-g1-conc-cl-end[entry]
-    (let [[a ts pt ] entry]
-    ;  (println (str "g1conc-cl-end:"  "  pt= " pt "  ts= " ts "  a= " a))
-    (join SEP [ts "g1conc-cl-end" pt] )))
+(defn process-gc-file [infile outfile]
+  (let [gcdata (line-seq (clojure.java.io/reader (clojure.java.io/file infile)))]
+    (with-open [w (clojure.java.io/writer outfile)]
+      (let [writeln (fn [x] (.write w (str x "\n")))]
+        (writeln headers_ALL_GC_TYPES)
+        (doseq [line gcdata]
+          (resolve_line line writeln))))))
 
 
 
-(defn process-g1-conc-mark-start[entry]
-    (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry]
-    (join SEP [ts "g1conc-mark-start"])))
+;(process-gc-file-preformat "input/gc.G1.log" TMP_GC_FILE )
+;(process-gc-file TMP_GC_FILE "data.txt")
 
-(defn process-g1-conc-mark-end[entry]
-    (let [[a ts pt ] entry]
-    ;  (println (str "g1conc-cl-end:" entry  "  pt= " pt "  ts= " ts "  a= " a))
-    (join SEP [ts "g1conc-mark-end" pt] )))
+;(process-gc-file-preformat "input/gc.1022.jent1.ParOld.log" TMP_GC_FILE )
+;(process-gc-file TMP_GC_FILE "data.txt")
 
+(process-gc-file-preformat "input/gc3.log" TMP_GC_FILE )
+(process-gc-file TMP_GC_FILE "data.txt")
 
-(defn process-g1-remark[entry]
-    (let [[a ts ts2 pt2 pt1 ys ye ym hs he hm pt ut kt rt & e] entry]
-    (join SEP [ts "g1remark" pt1])))
+;(toMB "100444K")
 
 
-(defn process-g1-cleanup [entry]
-  (let [[a ts hob hoa hsa pt & e] entry]
-    ;(println (str "Hello process-g1-cleanup:" entry))
-    ;(println (str "   " ))
-    (join SEP [ts "g1cleanup" pt " " " " " " " " " " " " " " hob hoa hsa])))
