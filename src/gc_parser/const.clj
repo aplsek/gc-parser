@@ -3,10 +3,10 @@
 (use '[clojure.string :only (join)])
 
 
-;(def ^:constant SEP " ")
 (def ^:constant SEP ",")
 (def ^:constant UNDERSCORE "_")
-;(def ^:constant SEP " | ")
+(def ^:constant NEWLINE "\n")
+(def ^:constant SPACE " ")
 
 ;;; CONSTANTS : Basic Patterns
 
@@ -25,9 +25,15 @@
              "old.occ.start" "old.occ.end" "old.size.start" "old.size.end" 
              "promoRate"
              "time.user" "time.sys" "time.real" ]))
+(def headers_ALL_GC_TYPES (join SEP  ["timestamp" "gc.type" "pause.time"
+         "young.occ.start" "young.size.start" "young.occ.end" "young.size.end"
+             "survivor.start" "survivor.end"
+             "heap.occ.start" "heap.size.start" "heap.occ.end" "heap.size.end"
+             "old.occ.start" "old.occ.end" "old.size.start" "old.size.end" 
+             "promoRate"
+             "time.user" "time.sys" "time.real" "perm.start" "perm.end" "perm.max" ]))
 
 
-(def ^:constant SPACE " ")
 
 ; Match for Timestamp: "2273.426:"
 (def ^:constant timestamp-pattern "([\\d\\.]+):")
@@ -45,7 +51,9 @@
 (def ^:constant number (str "([\\d\\.]+" order ")" ) )
 
 ; Match for Java heap space stat "524288K->32124K(2009792K)"
-(def ^:constant space (str "(\\d+)" order  "->(\\d+)" order "\\((\\d+)" order "\\)"))
+;(def ^:constant space (str "(\\d+)" order  "->(\\d+)" order "\\((\\d+)" order "\\)"))
+(def ^:constant space (str number  "->" number "\\(" number "\\)"))
+
 
 ; Match for Java heap space stat "8944.0M(8944.0M)->0.0B(8920.0M)"
 ; "([\\d\\.]+)K->([\\d\\.]+)K")
@@ -166,6 +174,7 @@
 
 
 
+(def ^:constant PAR_OLD_FULL_TEST "3886.023: [Full GC [PSYoungGen: 428817K->0K(24117248K)] [ParOldGen: 4192323K->2617989K(4194304K)] 4621140K->2617989K(28311552K) [PSPermGen: 155347K->154638K(262144K)], 1.5517090 secs] [Times: user=20.94 sys=0.22, real=1.55 secs]")
 
 
 
