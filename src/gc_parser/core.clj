@@ -71,13 +71,15 @@
        (writeln (process-g1-remark (first g1-remark)))
      )
      (when-not (nil? g1-cleanup)
-       (writeln (process-g1-cleanup (map toMB (first g1-cleanup)))))
+       (writeln (map toMB (first g1-cleanup))))
      (when-not (nil? full-gc) 
-				(writeln (process-full-gc (first full-gc))))
+       (println (map toMB (first full-gc)))
+				(writeln (process-full-gc (map toMB (first full-gc)))))
 		 (when-not (nil? minor-gc) 
-        (writeln (process-minor-gc (first minor-gc))))
+        (writeln (process-minor-gc (map toMB (first minor-gc)))))
      ;(println (str "ERR :" line))
       ;; TODO - process the line and report if there is no match!!
+      ;;
   )
 )
 
@@ -88,7 +90,7 @@
   (let [gcdata (line-seq (clojure.java.io/reader (clojure.java.io/file infile)))]
     (with-open [w (clojure.java.io/writer outfile)]
       (let [writeln (fn [x] (.write w (str x "\n")))]
-        (writeln headers_G1)
+        (writeln headers_ALL_GC_TYPES)
         (doseq [line gcdata]
           (resolve_line line writeln))))))
 
@@ -96,4 +98,13 @@
 
 ;(process-gc-file-preformat "input/gc.G1.log" TMP_GC_FILE )
 ;(process-gc-file TMP_GC_FILE "data.txt")
+
+;(process-gc-file-preformat "input/gc.1022.jent1.ParOld.log" TMP_GC_FILE )
+;(process-gc-file TMP_GC_FILE "data.txt")
+
+(process-gc-file-preformat "input/gc3.log" TMP_GC_FILE )
+(process-gc-file TMP_GC_FILE "data.txt")
+
+;(toMB "100444K")
+
 
