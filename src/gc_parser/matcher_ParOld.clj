@@ -54,25 +54,25 @@
 ;     kt - Kernel Time (in seconds)
 ;     rt - Real Time (in seconds)
 (defn process-full-gc [entry]
-    (let [[a ts ys ye ym os oe om hs he hm ps pe pm pt ut kt rt & e] entry
+    (let [[a ts yos yoe yss oos ooe oss hos hoe hss pos poe pss pt ut kt rt & e] entry
           promo (str "")]
       (join \, [ts "ParOld-full" pt 
-			           ys ye ym ""
+			           yos yss yoe ""
 				      "" "" 
-              hs he hm ""
-					   os oe om "" 
+              hos hss hoe ""
+					   oos oss ooe "" 
               promo
               ut kt rt 
-					   ps pe pm])))
+					   pos pss poe])))
 	  
 (defn process-minor-gc [entry]
-    (let [[a ts ys ye ym hs he hm pt ut kt rt & e] entry
+    (let [[a ts yos yoe yss hos hoe hss pt ut kt rt & e] entry
           promo (str "")]
 	  ;(println (str "process minor: " entry "  END."))
       (join \, [ts "ParOld-minor" pt 
-		        ys ye ym "" 
+		        yos yss yoe "" 
           "" ""
-				hs he hm 
+				hos hss hoe "" 
         "" "" "" ""
         promo
 				ut kt rt])))
