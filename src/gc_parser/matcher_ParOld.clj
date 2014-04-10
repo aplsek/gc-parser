@@ -60,19 +60,39 @@
 			           yos yss yoe ""
 				      "" "" 
               hos hss hoe ""
-					   oos oss ooe "" 
+					   oos ooe oss "" 
               promo
               ut kt rt 
 					   pos pss poe])))
-	  
+
+;; TODO: we are putting the same values for before/after 
+(defn getOldSizeOcc [yos yoe yss hos hoe hss]
+   (let [oldOccStart  (- hoe yoe)
+         oldOccEnd (- hoe yoe)
+         oldSizeStart (- hss yss)
+         oldSizeEnd (- hss yss)]
+    (join SEP [oldOccStart oldOccEnd oldSizeStart oldSizeEnd]))
+)
+
+(defn promoRateParOld [yos yoe yss hos hoe hss]
+   (let [rate (- (- hoe yoe) (- hos yos))]
+    (str rate)
+))
+
+;;
+;;
+;; young.occ.end == survivor.size.end
+;;
+;;
 (defn process-minor-gc [entry]
     (let [[a ts yos yoe yss hos hoe hss pt ut kt rt & e] entry
-          promo (str "")]
+          promo (promoRateParOld yos yoe yss hos hoe hss)
+          oldSizeAndOccp (getOldSizeOcc yos yoe yss hos hoe hss)  ]
 	  ;(println (str "process minor: " entry "  END."))
-      (join \, [ts "ParOld-minor" pt 
+ (join \, [ts "ParOld-minor" pt 
 		        yos yss yoe "" 
-          "" ""
+          yoe yoe
 				hos hss hoe "" 
-        "" "" "" ""
+        oldSizeAndOccp
         promo
 				ut kt rt])))

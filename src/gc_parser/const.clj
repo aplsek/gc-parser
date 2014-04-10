@@ -25,13 +25,15 @@
              "old.occ.start" "old.occ.end" "old.size.start" "old.size.end" 
              "promoRate"
              "time.user" "time.sys" "time.real" ]))
+
+;; old.gen values are mixed differently because they need to computed for G1GC
 (def headers_ALL_GC_TYPES (join SEP  ["timestamp" "gc.type" "pause.time"
          "young.occ.start" "young.size.start" "young.occ.end" "young.size.end"
              "survivor.start" "survivor.end"
              "heap.occ.start" "heap.size.start" "heap.occ.end" "heap.size.end"
              "old.occ.start" "old.occ.end" "old.size.start" "old.size.end" 
              "promoRate"
-             "time.user" "time.sys" "time.real" "perm.start" "perm.end" "perm.max" ]))
+             "time.user" "time.sys" "time.real" "perm.start" "perm.size.start" "perm.end" ]))
 
 
 
@@ -193,15 +195,17 @@
    ;(Integer. (read-string (stripMDB s))))
  (read-string (stripMDB s)))
 
+(defn form [d]
+  (format "%.2f" d))
 
 
 (defn toMB
   [x]
   (cond
-    (.endsWith x "G") (* (parse-int x) 1000)
+    (.endsWith x "G")  (* (parse-int x) 1000)
     (.endsWith x "K") (double (/ (parse-int x) 1000))
     (.endsWith x "M") (parse-int x)  
-    (.endsWith x "B") (parse-int x)  
+    (.endsWith x "B") (parse-int x) 
     :else x
    )
   )
