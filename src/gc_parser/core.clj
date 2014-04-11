@@ -95,8 +95,12 @@
           (resolve_line line writeln))))))
 
 
-(process-gc-file-preformat "input/gc.parOld-test.log" TMP_GC_FILE )
+;(process-gc-file-preformat "input/gc.parOld-test.log" TMP_GC_FILE )
+;(process-gc-file TMP_GC_FILE "data.txt")
+
+(process-gc-file-preformat "input/gc-test.log" TMP_GC_FILE )
 (process-gc-file TMP_GC_FILE "data.txt")
+
 
 ;(process-gc-file-preformat "input/gc.G1.log" TMP_GC_FILE )
 ;(process-gc-file TMP_GC_FILE "data.txt")
