@@ -8,6 +8,8 @@
 (def ^:constant NEWLINE "\n")
 (def ^:constant SPACE " ")
 
+(def ^:constant G1 "g1-")
+
 ;;; CONSTANTS : Basic Patterns
 
 
@@ -80,6 +82,11 @@
 ; Match "Heap: 9418.3M(15.0G)->498.3M(15.0G)"
 (def ^:constant space-heap (str "Heap: " space-g1))
 
+; Match "[Metaspace: 160179K->156741K(1196032K)],"
+(def ^:constant meta-space (str "Metaspace: " space-g1-cleanup))
+
+
+
 ; Match for Execution stat "[Times: user=0.24 sys=0.06, real=0.16 secs]"
 (def ^:constant exec-stat " \\[Times: user=([\\d\\.]+) sys=([\\d\\.]+), real=([\\d\\.]+) secs\\]")
 
@@ -113,10 +120,6 @@
 (def ^:constant g1_event_pattern (str "(\\(young\\)|\\(to-space\\ exhausted\\)|\\(mixed\\)| )+" ))
 ;  gcevent     (str "(\\(young\\)|\\(to-space\\ exhausted\\)|\\(mixed\\)| )+"  ", ")
 
-
-
-
-;;; OUTPUT formatting:
 
 
 

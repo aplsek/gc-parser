@@ -10,19 +10,11 @@
 
 
 
-
-
-
-(defn getGCPhaseName [line]
-  (str "g1-" (clojure.string/replace (clojure.string/join UNDERSCORE line) SPACE "" )) 
+(defn getG1PhaseName [line]
+  (str G1 (clojure.string/replace (clojure.string/join UNDERSCORE line) SPACE "" )) 
 )
 
 
-;;;;;
-;
-;
-; TODO: add ParOld processing
-;
 (defn resolve_line
   [line writeln]
    (let [g1-evac  (re-seq (minor-gc-pattern-g1-evac) line)
@@ -37,14 +29,16 @@
          g1-cleanup (re-seq (gc-pattern-g1-cleanup) line)
          minor-gc (re-seq (minor-gc-pattern) line)
 				 full-gc (re-seq (full-gc-pattern) line)
+         full-gc-meta (re-seq (full-gc-pattern-meta) line)
          g1full (re-seq (g1-full-pattern) line)
          g1event  (re-seq (g1-event-pattern) line)
          ]
+     (when (nil? line) ())
      (when-not (nil? g1-evac)
-                (writeln (process-g1-evac (getGCPhaseName g1event) (map toMB (first g1-evac))))
+                (writeln (process-g1-evac (getG1PhaseName g1event) (map toMB (first g1-evac))))
      )
      (when-not (nil? g1-young)
-            (writeln (process-g1-event (getGCPhaseName g1event) (map toMB (first g1-young))))
+            (writeln (process-g1-event (getG1PhaseName g1event) (map toMB (first g1-young))))
      )
      (when-not (nil? g1full)
        (writeln (process-g1-full "g1full" (map toMB (first g1full))))
@@ -73,8 +67,9 @@
      (when-not (nil? g1-cleanup)
        (writeln (map toMB (first g1-cleanup))))
      (when-not (nil? full-gc) 
-       ;(println (map toMB (first full-gc)))
 				(writeln (process-full-gc (map toMB (first full-gc)))))
+     (when-not (nil? full-gc-meta) 
+				(writeln (process-full-gc-meta (map toMB (first full-gc-meta)))))
 		 (when-not (nil? minor-gc) 
         (writeln (process-minor-gc (map toMB (first minor-gc)))))
      ;(println (str "ERR :" line))
@@ -98,7 +93,7 @@
 ;(process-gc-file-preformat "input/gc.parOld-test.log" TMP_GC_FILE )
 ;(process-gc-file TMP_GC_FILE "data.txt")
 
-(process-gc-file-preformat "input/gc-test.log" TMP_GC_FILE )
+(process-gc-file-preformat "input/parOld-jdk8.log" TMP_GC_FILE )
 (process-gc-file TMP_GC_FILE "data.txt")
 
 

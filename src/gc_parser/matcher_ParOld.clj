@@ -33,6 +33,27 @@
 						pause-time 
 						exec-stat))))
 
+(defn full-gc-pattern-meta []
+    (let [timestamp   "([\\d\\.]+): \\[Full.*"
+          young-gen  (str ": " space "]")
+          old-gen    (str " \\[\\w+: " space "\\] ")
+          meta-space-p   (str "\\[" meta-space "\\], ")
+          heap       space]
+       ;(println (str timestamp 
+		   ;          young-gen 
+			;			old-gen 
+				;		heap ", " 
+					;	meta-space-p 
+						;pause-time 
+					;	exec-stat))  
+      (re-pattern (str timestamp 
+		             young-gen 
+						old-gen 
+						heap ", " 
+						meta-space-p 
+						pause-time 
+						exec-stat))))
+
 ; Variable definitions (for both process-full-gc & process-minor-gc
 ;     ts - timestamp (in seconds)
 ;     pt - GC Pause Time (in seconds)
@@ -57,6 +78,18 @@
     (let [[a ts yos yoe yss oos ooe oss hos hoe hss pos poe pss pt ut kt rt & e] entry
           promo (str "")]
       (join \, [ts "ParOld-full" pt 
+			           yos yss yoe ""
+				      "" "" 
+              hos hss hoe ""
+					   oos ooe oss "" 
+              promo
+              ut kt rt 
+					   pos pss poe])))
+
+(defn process-full-gc-meta [entry]
+    (let [[a ts yos yoe yss oos ooe oss hos hoe hss pos poe pss pt ut kt rt & e] entry
+          promo (str "")]
+      (join \, [ts "ParOld-full-meta" pt 
 			           yos yss yoe ""
 				      "" "" 
               hos hss hoe ""
