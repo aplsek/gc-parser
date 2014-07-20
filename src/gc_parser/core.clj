@@ -87,14 +87,15 @@
       (let [writeln (fn [x] (.write w (str x NEWLINE)))]
         (writeln headers_ALL_GC_TYPES)
         (doseq [line gcdata]
+            ;(println (str "line=" line))
           (resolve_line line writeln))))))
 
 
 ;(process-gc-file-preformat "input/gc.parOld-test.log" TMP_GC_FILE )
 ;(process-gc-file TMP_GC_FILE "data.txt")
 
-(process-gc-file-preformat "input/parOld-jdk8.log" TMP_GC_FILE )
-(process-gc-file TMP_GC_FILE "data.txt")
+;(process-gc-file-preformat "input/parOld-jdk8.log" TMP_GC_FILE )
+;(process-gc-file TMP_GC_FILE "data.txt")
 
 
 ;(process-gc-file-preformat "input/gc.G1.log" TMP_GC_FILE )
